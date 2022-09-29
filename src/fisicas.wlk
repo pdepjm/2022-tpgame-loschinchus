@@ -3,7 +3,7 @@ import particulas.*
 import cuerpos.*
 object juego {//Para correr el juego hay que poner "juego.iniciar()" y despues "motorDeFisicas.agregarParticula(pelota)"
 	const property w = 30
-	const property h = 30
+	const property h = 20
 	const property cellSize = 32
 	
 	
@@ -11,25 +11,40 @@ object juego {//Para correr el juego hay que poner "juego.iniciar()" y despues "
 		//var cuerpoPrueba = new Cuerpo()
 		//cuerpoPrueba.agregarPunto(10,15)
 		//cuerpoPrueba.dibujar()
-		var particulaPrueba = new Particula(cinetica = new Cinetica(), x = 15, y = 15)
-		keyboard.left().onPressDo({jugador.position(jugador.position().left(1)) jugador.empujarDer()})
-		keyboard.right().onPressDo({jugador.position(jugador.position().right(1)) jugador.empujarIzq()})
-		keyboard.enter().onPressDo({jugador.patear()})
+		//var particulaPrueba = new Particula(cinetica = new Cinetica(), x = 15, y = 15)
+		
+		
+		keyboard.left().onPressDo({jugador1.izq() jugador1.empujarDer()})
+		keyboard.right().onPressDo({jugador1.der() jugador1.empujarIzq()})
+		keyboard.up().onPressDo({jugador1.up()})
+		keyboard.enter().onPressDo({jugador1.patear()})
+		jugador1.inicializarJugador()
+		
+		keyboard.a().onPressDo({jugador2.izq() jugador2.empujarIzq()})
+		keyboard.d().onPressDo({jugador2.der() jugador2.empujarDer()})
+		keyboard.w().onPressDo({jugador2.up()})
+		keyboard.space().onPressDo({jugador2.patear()})
+		jugador2.inicializarJugador()
+		
 		game.width(w)
 		game.height(h)
 		game.cellSize(cellSize)
 		game.ground("grid.png")
 		game.title("Juego")
-		game.addVisual(particulaPrueba)
-		game.addVisual(jugador)
-		game.onTick(10, "Fisicas", { motorDeFisicas.actualizarParticulas() }) //Cada 25ms se invoca al metodo que actualiza las particulas
+		game.addVisual(pelotita)
+		//game.addVisual(jugador)
+		game.onTick(10, "Fisicas", { motorDeFisicas.actualizar() }) //Cada 25ms se invoca al metodo que actualiza las particulas
+		
 		
 		//pelota.inicializarPelota()
 		
 		game.start()
 		
 		//motorDeFisicas.agregarCuerpo(pelota.cuerpoCollider())
-		motorDeFisicas.agregarParticula(particulaPrueba)
+		motorDeFisicas.agregarCuerpo(pelotita)
+		motorDeFisicas.agregarCuerpo(jugador1.cuerpo())
+		motorDeFisicas.agregarCuerpo(jugador2.cuerpo())
+
 		
 	}
 }
@@ -40,20 +55,17 @@ object juego {//Para correr el juego hay que poner "juego.iniciar()" y despues "
 // las modificara y les ordenara moverse
 
 object motorDeFisicas{
-	var property particulas = []
+
 	var property cuerpos = []
 	var hay_rozamiento = false
 	const g = -0.5
-	method agregarParticula(particula){
-		particulas.add(particula)
-	}
 	method agregarCuerpo(cuerpo){
 		cuerpos.add(cuerpo)
 	}
-	method actualizarParticulas(){
-		if(particulas.size() > 0){
+	method actualizar(){
+		if(cuerpos.size() > 0){
 			
-			particulas.forEach({ 
+			cuerpos.forEach({ 
 				c => 
 					if(c.estaChocandoX())
 							c.cinetica().cambiarVx(c.cinetica().energ_x()*(-0.8))
@@ -73,36 +85,12 @@ object motorDeFisicas{
 					
 					c.cinetica().aplicarAceleracion()
 					c.moverse()
+					jugador1.moverse()
+					jugador2.moverse()
+					
 			})
 		}
 	}
-	method actualizarCuerpos(){
-		if(cuerpos.size() > 0){
-			
-			cuerpos.forEach({ 
-				c => 
-					if(c.estaChocandoX())
-							c.cinetica().cambiarVx(c.cinetica().energ_x()*(-0.8))
-					else if(c.estaChocandoY()){
-							c.cinetica().cambiarVy(c.cinetica().energ_y()*(-0.8))
-							if(c.estaEnElPiso()){
-								if(hay_rozamiento) 
-									c.cinetica().cambiarVx(c.cinetica().energ_x()*(0.8))
-								hay_rozamiento = true
-							}
-						}
-	
-					else{
-						hay_rozamiento = false
-						c.cinetica().ay(g)
-					}
-					c.moverse()
-					pelota.moverse()
-			})
-		}
-	}
-	
-}
 
 //Cada particula tiene su propia cinetica.
 //Esta describe sus velocidades y sus aceleraciones 

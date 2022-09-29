@@ -71,7 +71,7 @@ class Cuerpo{
 				const p = new Particula(x = par.key(), y = par.value(), cinetica = cinetica)
 				particulas.add(p)
 				game.addVisual(p)
-			})
+			}) 
 		particulaLider = particulas.first()
 		
 	}
@@ -88,6 +88,14 @@ class Cuerpo{
 			p.moverse(dxPartLider, dyPartLider)
 			
 		})
+	}
+	method moverse(dx,dy){
+		particulaLider.moverse(dx,dy)
+		particulas.forEach({p => 
+			if(!(p == particulaLider)) 
+				p.moverse(dx, dy)
+				
+				})
 	}
 	method estaChocandoX(){
 		const chocanX = particulas.filter({p => p.estaChocandoX()})

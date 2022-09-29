@@ -74,28 +74,72 @@ object pelota{
 	}
 
 	}
+object pelotita inherits Particula(cinetica = new Cinetica(), x = 15, y = 15){
 	
-object jugador{
+}
+	
+class Jugador{
 	var property vx = 2
 	var property vy = 0
-	var property position = game.origin()
-	method image() = "circle_32x32.png"
-	method patear(){
-		const objetos_a_la_derecha = game.getObjectsIn(position.right(1))
-		if( objetos_a_la_derecha.size() > 0){
-			objetos_a_la_derecha.first().cinetica().cambiarVelocidad(2*vx, 4+vy)
-		}
+	var property x = 3
+	var property y = 0
+	var property position = game.at(x,y)
+	var property partLider = null
+	var property cuerpo = new Cuerpo()
+	
+	method inicializarJugador(){
+		cuerpo.agregarSegmentoFy(x,y,x,y+2)
+		cuerpo.agregarSegmentoFy(x+1,y,x+1,y+2)
+		cuerpo.dibujar()
+		partLider = game.getObjectsIn(position).first()
+		
+	}
+	
+	method image() = "jugador.png"
+	
+	method moverse(){
+		x += cuerpo.dxPartLider()
+		y += cuerpo.dyPartLider()
 	}
 	method empujarDer(){
-		const objetos = game.getObjectsIn(position)
-		if( objetos.size() > 0){
-			objetos.first().cinetica().aumentarVelocidad(vx, vy)
+		var obj = game.getObjectsIn(position.right(1)) + game.getObjectsIn(position)
+		if( obj.contains(pelotita)){
+			pelotita.cinetica().aumentarVelocidad(vx, vy)
 		}
 	}
 	method empujarIzq(){
-		const objetos = game.getObjectsIn(position)
-		if( objetos.size() > 1){
-			objetos.first().cinetica().aumentarVelocidad(-vx, vy)
-			}
+		var obj = game.getObjectsIn(position.right(1)) + game.getObjectsIn(position)
+		if( obj.contains(pelotita)){
+			pelotita.cinetica().aumentarVelocidad(-vx, vy)
+		}
 	}
+	method izq(){
+		cuerpo.moverse(-1,0)
+		position = game.at(partLider.x(),partLider.y())
+	}
+	method der(){
+		cuerpo.moverse(1,0)
+		position = game.at(partLider.x(), partLider.y())
+	}
+	method up(){
+		cuerpo.cinetica().cambiarVy(5)
+		
+	}
+}
+
+object jugador1 inherits Jugador{
+	method patear(){
+		var obj = game.getObjectsIn(position.right(1)) + game.getObjectsIn(position.right(2))
+		if( obj.contains(pelotita)){
+			pelotita.cinetica().cambiarVelocidad(2*vx, 4+vy)
+		}
+	}	
+}
+object jugador2 inherits Jugador(vx = -2, x = 25){
+	method patear(){
+		var obj = game.getObjectsIn(position.left(1)) + game.getObjectsIn(position)
+		if( obj.contains(pelotita)){
+			pelotita.cinetica().cambiarVelocidad(2*vx, 4+vy)
+		}
+	}	
 }
