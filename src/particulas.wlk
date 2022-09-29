@@ -21,7 +21,7 @@ class Particula{
 	var property position = game.at(x,y)
 	var property colisionar = {}
 	
-	method estaChocandoX() = x == 0 || x == juego.w()
+	method estaChocandoX() = x == 0 || x == juego.w() || game.getObjectsIn(position).size() > 1
 	method estaChocandoY() = y == 0 || y == juego.h()
 	method estaEnElPiso() = y == 0
 	
@@ -72,5 +72,30 @@ object pelota{
 		position = position.up(cuerpoCollider.dyPartLider())
 		position = position.right(cuerpoCollider.dxPartLider())
 	}
+
+	}
 	
+object jugador{
+	var property vx = 2
+	var property vy = 0
+	var property position = game.origin()
+	method image() = "circle_32x32.png"
+	method patear(){
+		const objetos_a_la_derecha = game.getObjectsIn(position.right(1))
+		if( objetos_a_la_derecha.size() > 0){
+			objetos_a_la_derecha.first().cinetica().cambiarVelocidad(2*vx, 4+vy)
+		}
+	}
+	method empujarDer(){
+		const objetos = game.getObjectsIn(position)
+		if( objetos.size() > 0){
+			objetos.first().cinetica().aumentarVelocidad(vx, vy)
+		}
+	}
+	method empujarIzq(){
+		const objetos = game.getObjectsIn(position)
+		if( objetos.size() > 1){
+			objetos.first().cinetica().aumentarVelocidad(-vx, vy)
+			}
+	}
 }

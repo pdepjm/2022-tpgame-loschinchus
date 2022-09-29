@@ -8,23 +8,28 @@ object juego {//Para correr el juego hay que poner "juego.iniciar()" y despues "
 	
 	
 	method iniciar() {
-		var cuerpoPrueba = new Cuerpo()
-		cuerpoPrueba.agregarPunto(10,15)
-		cuerpoPrueba.dibujar()
+		//var cuerpoPrueba = new Cuerpo()
+		//cuerpoPrueba.agregarPunto(10,15)
+		//cuerpoPrueba.dibujar()
+		var particulaPrueba = new Particula(cinetica = new Cinetica(), x = 15, y = 15)
+		keyboard.left().onPressDo({jugador.position(jugador.position().left(1)) jugador.empujarDer()})
+		keyboard.right().onPressDo({jugador.position(jugador.position().right(1)) jugador.empujarIzq()})
+		keyboard.enter().onPressDo({jugador.patear()})
 		game.width(w)
 		game.height(h)
 		game.cellSize(cellSize)
 		game.ground("grid.png")
 		game.title("Juego")
-		//game.addVisual(pelota)
-		game.onTick(10, "Fisicas", { motorDeFisicas.actualizarCuerpos() }) //Cada 25ms se invoca al metodo que actualiza las particulas
+		game.addVisual(particulaPrueba)
+		game.addVisual(jugador)
+		game.onTick(10, "Fisicas", { motorDeFisicas.actualizarParticulas() }) //Cada 25ms se invoca al metodo que actualiza las particulas
 		
 		//pelota.inicializarPelota()
 		
 		game.start()
 		
 		//motorDeFisicas.agregarCuerpo(pelota.cuerpoCollider())
-		motorDeFisicas.agregarCuerpo(cuerpoPrueba)
+		motorDeFisicas.agregarParticula(particulaPrueba)
 		
 	}
 }
@@ -44,6 +49,32 @@ object motorDeFisicas{
 	}
 	method agregarCuerpo(cuerpo){
 		cuerpos.add(cuerpo)
+	}
+	method actualizarParticulas(){
+		if(particulas.size() > 0){
+			
+			particulas.forEach({ 
+				c => 
+					if(c.estaChocandoX())
+							c.cinetica().cambiarVx(c.cinetica().energ_x()*(-0.8))
+					else if(c.estaChocandoY()){
+							c.cinetica().cambiarVy(c.cinetica().energ_y()*(-0.7))
+							if(c.estaEnElPiso()){
+								if(hay_rozamiento) 
+									c.cinetica().cambiarVx(c.cinetica().energ_x()*(0.8))
+								hay_rozamiento = true
+							}
+						}
+	
+					else{
+						hay_rozamiento = false
+						c.cinetica().ay(g)
+					}
+					
+					c.cinetica().aplicarAceleracion()
+					c.moverse()
+			})
+		}
 	}
 	method actualizarCuerpos(){
 		if(cuerpos.size() > 0){
