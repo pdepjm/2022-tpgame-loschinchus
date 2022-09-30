@@ -2,8 +2,8 @@ import wollok.game.*
 import particulas.*
 import cuerpos.*
 object juego {//Para correr el juego hay que poner "juego.iniciar()" y despues "motorDeFisicas.agregarParticula(pelota)"
-	const property w = 30
-	const property h = 30
+	const property w = 20
+	const property h = 20
 	const property cellSize = 32
 	
 	
@@ -93,7 +93,7 @@ class Cinetica{
 
 	
 	method actualizarX(x) = 0.max(juego.w().min(x+vx))
-	method actualizarY(y) = 0.max(juego.h().min(y+vy)
+	method actualizarY(y) = 0.max(juego.h().min(y+vy))
 	
 	method cambiarVelocidad(nuevaVx, nuevaVy){ 
 		vx = nuevaVx
