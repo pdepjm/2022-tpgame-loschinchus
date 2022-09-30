@@ -1,6 +1,7 @@
 import fisicas.*
 import wollok.game.*
 import particulas.*
+
 class Funcion{
 	var property expresion = {x => x}
 	var var_ind = "x"
@@ -11,22 +12,16 @@ class Funcion{
 		const puntos = []
 		const cantidadPuntos = max - min + 1
 		cantidadPuntos.times({ vez =>
-			
 			if(var_ind == "x")
 				puntos.add(new Pair(x = min, y = expresion.apply(min)) )
 			else
 				puntos.add(new Pair(x = expresion.apply(min), y = min) )
-			
-			min += 1
-			
-		})
-		
+			min += 1                   })
 		return puntos
 	}
 }
 
 class Cuerpo{
-	
 	var property funciones = []
 	var property puntos = []
 	var property particulas = []
@@ -61,20 +56,16 @@ class Cuerpo{
 	}
 	
 	method dibujar(){
-		
 		if(funciones.size() > 0)
-			funciones.forEach({f =>
-				puntos = puntos + f.devolverPuntos()
-			})
+			funciones.forEach({f => puntos = puntos + f.devolverPuntos()})
 		if(puntos.size() > 0)
 			puntos.forEach({par =>
 				const p = new Particula(x = par.key(), y = par.value(), cinetica = cinetica)
 				particulas.add(p)
-				game.addVisual(p)
-			})
+				game.addVisual(p)   })
 		particulaLider = particulas.first()
-		
 	}
+	
 	method moverse(){
 		cinetica.aplicarAceleracion()
 		dxPartLider = -particulaLider.x()
@@ -83,28 +74,31 @@ class Cuerpo{
 		dxPartLider += particulaLider.x()
 		dyPartLider += particulaLider.y()
 		
-		
-		particulas.forEach({p => if(!(p == particulaLider)) 
-			p.moverse(dxPartLider, dyPartLider)
-			
-		})
+		particulas.forEach({p => if(!(p == particulaLider)) p.moverse(dxPartLider, dyPartLider)})
 	}
+	
+	method moverse(dx,dy){
+		particulaLider.moverse(dx,dy)
+		particulas.forEach({p => if(!(p == particulaLider)) p.moverse(dx, dy)})
+	}
+	
 	method estaChocandoX(){
 		const chocanX = particulas.filter({p => p.estaChocandoX()})
-		if(chocanX.size() > 0){
+		if(chocanX.size() > 0){ //alguna particula choca
 			particulaLider = chocanX.first()
 			return true
 		}
 		return false
 	}
+	
 	method estaChocandoY() {
 		const chocanY = particulas.filter({p => p.estaChocandoY()})
-		if(chocanY.size() > 0){
-			particulaLider = chocanY.first()
+		if(chocanY.size() > 0){ //alguna particula choca
+			particulaLider = chocanY.first() 
 			return true
 		}
 		return false
-		
-		}
+	}
+	
 	method estaEnElPiso() = particulas.any({p => p.estaEnElPiso()})
 }
