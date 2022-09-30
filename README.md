@@ -2,9 +2,10 @@
 
 ## Equipo de desarrollo
 
-- Alguien
-- Persona
-- etc.
+- Mateo Ezequiel Bertogliati
+- Andrés Martín Trías
+- Gianfranco Riccelli
+- Guadalupe Sofía García Fariñas
 
 ## Capturas
 
