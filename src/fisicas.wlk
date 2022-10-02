@@ -1,6 +1,7 @@
- import wollok.game.*
+import wollok.game.*
 import particulas.*
 import cuerpos.*
+import marcador.*
 
 //Para correr: "juego.iniciar()"
 object juego {
@@ -49,6 +50,9 @@ object juego {
 		motorDeFisicas.agregarCuerpo(pelotita)
 		motorDeFisicas.agregarCuerpo(jugador1.cuerpo())
 		motorDeFisicas.agregarCuerpo(jugador2.cuerpo())
+		
+		
+		contMin.iniciarContador()
 	}
 }
 

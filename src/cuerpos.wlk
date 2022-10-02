@@ -111,7 +111,7 @@ class Cuerpo{
 class Arco{
 	var property cuerpo = new Cuerpo()
 	var property alto = 6
-	var property ancho = juego.w()*juego.proporcionArco(
+	var property ancho = juego.w()*juego.proporcionArco()
 }
 object arco1 inherits Arco{
 	method dibujar(){
@@ -125,4 +125,3 @@ object arco2 inherits Arco{
 		cuerpo.dibujar()
 	}
 }
-)
