@@ -66,31 +66,37 @@ class Cuerpo{
 				game.addVisual(p)   })
 		particulaLider = particulas.first()
 	}
+	method actualizarDxDyLider(efecto){
+		dxPartLider = -particulaLider.x()
+		dyPartLider = -particulaLider.y()
+		efecto.apply()
+		dxPartLider += particulaLider.x()
+		dyPartLider += particulaLider.y()
+	}
+	method moverParticulaLider(){
+		self.actualizarDxDyLider({particulaLider.moverse()})
+	}
+	method moverParticulaLider(dx,dy){
+		self.actualizarDxDyLider({particulaLider.moverse(dx,dy)})
+	}
 	
 	method moverse(){
 		cinetica.aplicarAceleracion()
-		dxPartLider = -particulaLider.x()
-		dyPartLider = -particulaLider.y()
-		particulaLider.moverse()
-		dxPartLider += particulaLider.x()
-		dyPartLider += particulaLider.y()
-		
+		self.moverParticulaLider()
 		particulas.forEach({p => if(!(p == particulaLider)) p.moverse(dxPartLider, dyPartLider)})
 	}
 	
 	method moverse(dx,dy){
-		particulaLider.moverse(dx,dy)
-		particulas.forEach({p => if(!(p == particulaLider)) p.moverse(dx, dy)})
+		self.moverParticulaLider(dx,dy)
+		particulas.forEach({p => if(!(p == particulaLider)) p.moverse(dxPartLider, dyPartLider)})
 	}
 	
 	method estaChocandoX(){
 		const chocanX = particulas.filter({p => p.estaChocandoX()})
 		if(chocanX.size() > 0){ //alguna particula choca
-			if(self.estaEnElPiso())
-				self.estaChocandoY()
-			else
-				particulaLider = chocanX.first()
-			
+			particulaLider.hacerBlanca()
+			particulaLider = chocanX.first()
+			particulaLider.hacerAzul()
 			return true
 		}
 		return false
@@ -99,8 +105,13 @@ class Cuerpo{
 	method estaChocandoY() {
 		const chocanY = particulas.filter({p => p.estaChocandoY()})
 		if(chocanY.size() > 0){ //alguna particula choca
-			if(!chocanY.contains(pelotita)) 
+			particulaLider.hacerBlanca()
+			const chocanTambienX = chocanY.filter({p => p.estaChocandoX()})
+			if(chocanTambienX.size() > 0)
+				particulaLider = chocanTambienX.first() 
+			else 
 				particulaLider = chocanY.first() 
+			particulaLider.hacerAzul()
 			return true
 		}
 		return false

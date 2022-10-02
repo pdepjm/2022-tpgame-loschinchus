@@ -22,12 +22,19 @@ class Particula{
 	var property cinetica
 	var property rebote = 0
 	var property colisionar = {}
-	method image() = "circle_32x32.png"
+	var property image = "circle_32x32.png"
 	
-	method estaChocandoX() = x == juego.x0() || x == juego.w() || game.getObjectsIn(position).size() > 1
-	method estaChocandoY() = self.estaEnElPiso() || y == juego.h()
+	method estaChocandoX() = x == juego.x0() || x == juego.w()-1 || game.getObjectsIn(position).size() > 1
+	method estaChocandoY() = self.estaEnElPiso() || y == juego.h()-1
 	method estaEnElPiso() = y == juego.y0()
 	method posicionOcupada(i,j) = game.getObjectsIn(game.at(i,j)).size() > 0
+	
+	method hacerBlanca(){
+		image = "circle_32x32.png" 
+	}
+	method hacerAzul(){
+		image = "circle_blue_32x32.png" 
+	}
 	
 	method moverse(){
 		self.evaluarChoques()
@@ -36,8 +43,8 @@ class Particula{
 		position = game.at(x,y)
 	}
 	method moverse(vx,vy){
-		x += vx
-		y += vy
+		x = juego.limitarX(x+vx)
+		y = juego.limitarY(y+vy)
 		position = game.at(x,y)
 	}
 	

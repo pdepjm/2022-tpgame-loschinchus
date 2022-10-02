@@ -54,6 +54,12 @@ object juego {
 		
 		contMin.iniciarContador()
 	}
+	method limitarX(x){
+		return x.limitBetween(x0,w-1)
+	}
+	method limitarY(y){
+		return y.limitBetween(y0,h-1)
+	}
 }
 
 //El motor de fisicas es basicamente la ley que le dice a las particulas cuando moverse
@@ -127,8 +133,8 @@ class Cinetica{
 	var property energ_y = 0
 	
 	//posicion
-	method actualizarX(x) = juego.x0().max(juego.w().min(x+vx)) 
-	method actualizarY(y) = juego.y0().max(juego.h().min(y+vy))
+	method actualizarX(x) = juego.limitarX(x+vx) 
+	method actualizarY(y) = juego.limitarY(y+vy)
 	
 	//velocidad
 	method nuevaVelocidad(nuevaVx, nuevaVy){ 
