@@ -19,15 +19,15 @@ object juego {
 		//var particulaPrueba = new Particula(cinetica = new Cinetica(), x = 15, y = 15)
 		
 		//teclas jugador1
-		keyboard.left().onPressDo({jugador2.izq() jugador2.empujarIzq()})
-		keyboard.right().onPressDo({jugador2.der() jugador2.empujarDer()})
+		keyboard.left().onPressDo({jugador2.empujarIzq() jugador2.izq() })
+		keyboard.right().onPressDo({jugador2.empujarDer() jugador2.der() })
 		keyboard.up().onPressDo({jugador2.up()})
 		keyboard.enter().onPressDo({jugador2.patear()})
 		jugador1.inicializarJugador()
 		
 		//teclas jugador2
-		keyboard.a().onPressDo({jugador1.izq() jugador1.empujarDer()})
-		keyboard.d().onPressDo({jugador1.der() jugador1.empujarIzq()})
+		keyboard.a().onPressDo({jugador1.empujarDer() jugador1.izq() })
+		keyboard.d().onPressDo({jugador1.empujarIzq() jugador1.der() })
 		keyboard.w().onPressDo({jugador1.up()})
 		keyboard.space().onPressDo({jugador1.patear()})
 		jugador2.inicializarJugador()
