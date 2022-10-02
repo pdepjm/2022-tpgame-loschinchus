@@ -20,12 +20,14 @@ class Particula{
 	var property y
 	var property position = game.at(x,y)
 	var property cinetica
+	var property rebote = 0
 	var property colisionar = {}
 	method image() = "circle_32x32.png"
 	
-	method estaChocandoX() = x == 0 || x == juego.w() || game.getObjectsIn(position).size() > 1
+	method estaChocandoX() = x == juego.x0() || x == juego.w() || game.getObjectsIn(position).size() > 1
 	method estaChocandoY() = self.estaEnElPiso() || y == juego.h()
-	method estaEnElPiso() = y == 0
+	method estaEnElPiso() = y == juego.y0()
+	method posicionOcupada(i,j) = game.getObjectsIn(game.at(i,j)).size() > 0
 	
 	method moverse(){
 		self.evaluarChoques()
@@ -40,9 +42,9 @@ class Particula{
 	}
 	
 	method evaluarChoques(){
-		if 		(x+cinetica.vx() < 0) 			cinetica.vx(-x)
+		if 		(x+cinetica.vx() < juego.x0()) 			cinetica.vx(-x)
 		else if (x+cinetica.vx() > juego.w()) 	cinetica.vx(juego.w() - x)
-		if 		(y+cinetica.vy() < 0) 			cinetica.vy(-y)
+		if 		(y+cinetica.vy() < juego.y0()) 			cinetica.vy(-y)
 		else if	(y+cinetica.vy() > juego.h())	cinetica.vy(juego.h()-y)
 	}
 }
@@ -69,7 +71,50 @@ object pelota{
 	}
 }
 
-object pelotita inherits Particula(cinetica = new Cinetica(), x = 15, y = 15){}
+object pelotita inherits Particula(cinetica = new Cinetica(), x = 15, y = 15, rebote = 0.8){
+	override method evaluarChoques(){
+		super()
+		var vy = cinetica.vy()
+		var vx = cinetica.vx()
+		if(vx.abs() > 1 || vy.abs() > 1){
+			var signoY = 1
+			if(vy < 0)
+				signoY = -1
+			var noSeEncontroChoque = true
+			if(vx == 0){
+				vy.abs().times({i =>
+					const nuevaY = y+i*signoY
+					if(noSeEncontroChoque && self.posicionOcupada(x,nuevaY)){
+						cinetica.vy(nuevaY) 
+						noSeEncontroChoque = false
+					}
+				})
+			}
+			else{
+				
+				var signoX = 1
+				if(vx < 0)
+					signoX = -1
+				const m = vy / vx
+				const expr = {t => m*(t-x) + y}
+				vx.abs().times({i =>
+					const dx = i*signoX
+					const nuevaX = x+dx
+					const nuevaY = expr.apply(nuevaX)
+					if(noSeEncontroChoque && self.posicionOcupada(nuevaX,nuevaY)){
+						cinetica.vx(dx)
+						cinetica.vy(nuevaY - y)
+						noSeEncontroChoque = false
+					}
+				})
+				
+			}
+			
+		}
+	}
+	
+	override method estaChocandoY() = super() || game.getObjectsIn(position).size() > 1
+}
 
 //jugadores
 class Jugador{
@@ -117,7 +162,8 @@ class Jugador{
 		position = game.at(partLider.x(), partLider.y())
 	}
 	method up(){
-		cuerpo.cinetica().nuevaVy(5)
+		if(cuerpo.estaEnElPiso())
+			cuerpo.cinetica().nuevaVy(2)
 	}
 }
 

@@ -28,6 +28,7 @@ class Cuerpo{
 	var property particulaLider = null
 	var property dxPartLider = 0
 	var property dyPartLider = 0
+	var property rebote = 0
 	
 	var property cinetica = new Cinetica()
 	
@@ -85,7 +86,11 @@ class Cuerpo{
 	method estaChocandoX(){
 		const chocanX = particulas.filter({p => p.estaChocandoX()})
 		if(chocanX.size() > 0){ //alguna particula choca
-			particulaLider = chocanX.first()
+			if(self.estaEnElPiso())
+				self.estaChocandoY()
+			else
+				particulaLider = chocanX.first()
+			
 			return true
 		}
 		return false
@@ -94,7 +99,8 @@ class Cuerpo{
 	method estaChocandoY() {
 		const chocanY = particulas.filter({p => p.estaChocandoY()})
 		if(chocanY.size() > 0){ //alguna particula choca
-			particulaLider = chocanY.first() 
+			if(!chocanY.contains(pelotita)) 
+				particulaLider = chocanY.first() 
 			return true
 		}
 		return false
@@ -102,3 +108,21 @@ class Cuerpo{
 	
 	method estaEnElPiso() = particulas.any({p => p.estaEnElPiso()})
 }
+class Arco{
+	var property cuerpo = new Cuerpo()
+	var property alto = 6
+	var property ancho = juego.w()*juego.proporcionArco(
+}
+object arco1 inherits Arco{
+	method dibujar(){
+		cuerpo.agregarSegmentoFx(juego.x0(),alto,juego.x0()+ancho,alto)
+		cuerpo.dibujar()
+	}
+}
+object arco2 inherits Arco{
+	method dibujar(){
+		cuerpo.agregarSegmentoFx(juego.w()-ancho,alto,juego.w(),alto)
+		cuerpo.dibujar()
+	}
+}
+)

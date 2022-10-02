@@ -1,4 +1,4 @@
-import wollok.game.*
+ import wollok.game.*
 import particulas.*
 import cuerpos.*
 
@@ -6,6 +6,9 @@ import cuerpos.*
 object juego {
 	const property w = 30
 	const property h = 20
+	const property proporcionArco = 1/6
+	const property y0 = 0
+	const property x0 = 0
 	const property cellSize = 32
 	
 	method iniciar() {
@@ -15,18 +18,22 @@ object juego {
 		//var particulaPrueba = new Particula(cinetica = new Cinetica(), x = 15, y = 15)
 		
 		//teclas jugador1
-		keyboard.left().onPressDo({jugador1.izq() jugador1.empujarDer()})
-		keyboard.right().onPressDo({jugador1.der() jugador1.empujarIzq()})
-		keyboard.up().onPressDo({jugador1.up()})
-		keyboard.enter().onPressDo({jugador1.patear()})
+		keyboard.left().onPressDo({jugador2.izq() jugador2.empujarIzq()})
+		keyboard.right().onPressDo({jugador2.der() jugador2.empujarDer()})
+		keyboard.up().onPressDo({jugador2.up()})
+		keyboard.enter().onPressDo({jugador2.patear()})
 		jugador1.inicializarJugador()
 		
 		//teclas jugador2
-		keyboard.a().onPressDo({jugador2.izq() jugador2.empujarIzq()})
-		keyboard.d().onPressDo({jugador2.der() jugador2.empujarDer()})
-		keyboard.w().onPressDo({jugador2.up()})
-		keyboard.space().onPressDo({jugador2.patear()})
+		keyboard.a().onPressDo({jugador1.izq() jugador1.empujarDer()})
+		keyboard.d().onPressDo({jugador1.der() jugador1.empujarIzq()})
+		keyboard.w().onPressDo({jugador1.up()})
+		keyboard.space().onPressDo({jugador1.patear()})
 		jugador2.inicializarJugador()
+		
+		//arcos
+		arco1.dibujar()
+		arco2.dibujar()
 		
 		//caracteristicas
 		game.width(w)
@@ -52,33 +59,48 @@ object juego {
 
 object motorDeFisicas{
 	var property cuerpos = []
-	var hay_rozamiento = false
+	var property hayRozamiento = false
+	var property puedePicar = true
+	var property rozamiento = 0.8
 	const g = -0.5
 	
 	method agregarCuerpo(cuerpo){cuerpos.add(cuerpo)}
 	method actualizar(){
 		if(cuerpos.size() > 0){
 			cuerpos.forEach({ c => 
-					if(c.estaChocandoX()) 	//c choca una "pared", la velocidad va hacia el otro lado y es menor
-						c.cinetica().nuevaVx(c.cinetica().energ_x()*(-0.8))
-			        else{
-			        	if(c.estaChocandoY()){	//c choca el "techo" o el "piso", la velocidad va hacia el otro lado y es menor
-			        		c.cinetica().nuevaVy(c.cinetica().energ_y()*(-0.7))
-							if(c.estaEnElPiso()){ //si choca el piso y hay rozamiento disminuye vx
-								if(hay_rozamiento) 		
-									c.cinetica().nuevaVy(c.cinetica().energ_x()*(0.8))
-								hay_rozamiento = true //porque está en el piso
-							}
+					const cineticaActual = c.cinetica()
+					if(c.estaChocandoX()){//c choca una "pared", la velocidad va hacia el otro lado y es menor
+						cineticaActual.nuevaVx(cineticaActual.energ_x()*(-c.rebote()))
+					}
+			       
+		        	if(c.estaChocandoY()){	//c choca el "techo" o el "piso", la velocidad va hacia el otro lado y es menor
+		        		if(cineticaActual.puedePicar()){
+		        			cineticaActual.nuevaVy(cineticaActual.energ_y()*(-c.rebote()))
+		        			cineticaActual.puedePicar(false)
+		        		}
+		        		else{
+		        			cineticaActual.ay(0)
+		        		}
+						if(c.estaEnElPiso()){ //si choca el piso y hay rozamiento disminuye vx
+							if(hayRozamiento)		
+								cineticaActual.nuevaVx(cineticaActual.energ_x()*rozamiento)
+								
+							hayRozamiento = true //porque está en el piso
 						}
-						else{ //choca el techo, no hay rozamiento con el piso
-						hay_rozamiento = false
-						c.cinetica().ay(g)
-						}
-					} 
-					c.cinetica().aplicarAceleracion()
+					}
+					else{
+					//Esta en el aire, no hay rozamiento con el piso
+					hayRozamiento = false
+					cineticaActual.puedePicar(true)
+					cineticaActual.ay(g)
+					}
+					
+					
+					cineticaActual.aplicarAceleracion()
 					c.moverse()
 					jugador1.moverse()
-					jugador2.moverse()	})
+					jugador2.moverse()
+						})
 	   	}
 	}
 }
@@ -96,12 +118,13 @@ class Cinetica{
 	var property vy = 0
 	var property ax = 0
 	var property ay = 0
+	var property puedePicar = false
 	var property energ_x = 0
 	var property energ_y = 0
 	
 	//posicion
-	method actualizarX(x) = 0.max(juego.w().min(x+vx)) 
-	method actualizarY(y) = 0.max(juego.h().min(y+vy))
+	method actualizarX(x) = juego.x0().max(juego.w().min(x+vx)) 
+	method actualizarY(y) = juego.y0().max(juego.h().min(y+vy))
 	
 	//velocidad
 	method nuevaVelocidad(nuevaVx, nuevaVy){ 
