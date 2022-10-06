@@ -1,185 +1,336 @@
+import mutablePosition.*
+import juego.*
 import wollok.game.*
-import particulas.*
-import cuerpos.*
-import marcador.*
 
-//Para correr: "juego.iniciar()"
-object juego {
-	const property w = 30
-	const property h = 20
-	const property proporcionArco = 1/6
-	const property y0 = 0
-	const property x0 = 0
-	const property cellSize = 32
-	
-	method iniciar() {
-		//var cuerpoPrueba = new Cuerpo()
-		//cuerpoPrueba.agregarPunto(10,15)
-		//cuerpoPrueba.dibujar()
-		//var particulaPrueba = new Particula(cinetica = new Cinetica(), x = 15, y = 15)
+package particulas{
+	class Particula{
+		var property image = "soccer_ball_32x32.png"
+		var property position = new MutablePosition(x=15,y=15)
+		var property velocidad= new Velocidad()
+		var property gravedad = juego.g()// valor por defecto de gravedad
+		var property choque = new Choque() //objeto choque
 		
-		//teclas jugador1
-		keyboard.left().onPressDo({jugador2.empujarIzq() jugador2.izq() })
-		keyboard.right().onPressDo({jugador2.empujarDer() jugador2.der() })
-		keyboard.up().onPressDo({jugador2.up()})
-		keyboard.enter().onPressDo({jugador2.patear()})
-		jugador1.inicializarJugador()
+		var property rebote = 0.6 //velocidad que queda despues de rebotar
+		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
 		
-		//teclas jugador2
-		keyboard.a().onPressDo({jugador1.empujarDer() jugador1.izq() })
-		keyboard.d().onPressDo({jugador1.empujarIzq() jugador1.der() })
-		keyboard.w().onPressDo({jugador1.up()})
-		keyboard.space().onPressDo({jugador1.patear()})
-		jugador2.inicializarJugador()
+		method patear(fuerzaX,fuerzaY, signo){
+			velocidad.nuevaVelocidad( ( fuerzaX + velocidad.vx().abs() )*signo, fuerzaY + velocidad.vy().abs()) 
+		}
 		
-		//arcos
-		arco1.dibujar()
-		arco2.dibujar()
-		
-		//caracteristicas
-		game.width(w)
-		game.height(h)
-		game.cellSize(cellSize)
-		game.ground("grid.png")
-		game.title("Juego")
-		game.addVisual(pelotita)
-		//game.addVisual(jugador)
-		game.onTick(10, "Fisicas", {motorDeFisicas.actualizar()}) //Cada 10ms se invoca al metodo que actualiza las particulas
-		game.start()
-		
-		motorDeFisicas.agregarCuerpo(pelotita)
-		motorDeFisicas.agregarCuerpo(jugador1.cuerpo())
-		motorDeFisicas.agregarCuerpo(jugador2.cuerpo())
-		
-		
-		contMin.iniciarContador()
-	}
-	method limitarX(x){
-		return x.limitBetween(x0,w-1)
-	}
-	method limitarY(y){
-		return y.limitBetween(y0,h-1)
-	}
-}
-
-//El motor de fisicas es basicamente la ley que le dice a las particulas cuando moverse
-// y ademas tiene permitido modificar sus cinematicas y cambiar su estado.
-// El motor de fisicas tiene un array de particulas a traves del cual, llegado el momento
-// las modificara y les ordenara moverse
-
-object motorDeFisicas{
-	var property cuerpos = []
-	var property hayRozamiento = false
-	var property puedePicar = true
-	var property rozamiento = 0.8
-	const g = -0.5
-	
-	method agregarCuerpo(cuerpo){cuerpos.add(cuerpo)}
-	method actualizar(){
-		if(cuerpos.size() > 0){
-			cuerpos.forEach({ c => 
-					const cineticaActual = c.cinetica()
-					if(c.estaChocandoX()){//c choca una "pared", la velocidad va hacia el otro lado y es menor
-						cineticaActual.nuevaVx(cineticaActual.energ_x()*(-c.rebote()))
-					}
-			       
-		        	if(c.estaChocandoY()){	//c choca el "techo" o el "piso", la velocidad va hacia el otro lado y es menor
-		        		if(cineticaActual.puedePicar()){
-		        			cineticaActual.nuevaVy(cineticaActual.energ_y()*(-c.rebote()))
-		        			cineticaActual.puedePicar(false)
-		        		}
-		        		else{
-		        			cineticaActual.ay(0)
-		        		}
-						if(c.estaEnElPiso()){ //si choca el piso y hay rozamiento disminuye vx
-							if(hayRozamiento)		
-								cineticaActual.nuevaVx(cineticaActual.energ_x()*rozamiento)
-								
-							hayRozamiento = true //porque está en el piso
-						}
-					}
-					else{
-					//Esta en el aire, no hay rozamiento con el piso
-					hayRozamiento = false
-					cineticaActual.puedePicar(true)
-					cineticaActual.ay(g)
-					}
+		method rebotarX(){ //si la velocidad en x es lo suficientemente grande se puede rebotar
+			if(velocidad.vx().abs() > 1){
+				velocidad.factorVx(-rebote)
+			}
+		}
+		method rebotarY(){  //si la velocidad en y es lo suficientemente grande se puede rebotar
+			if(velocidad.vy().abs() > 1){
+				velocidad.factorVy(-rebote)
+			}
+		}
+		method estaEnElPiso() = position.y() == juego.y0()
+		method moverse(){
+			
+			choque.analizarEstadoActual(position, velocidad) //analiza la posicion actual y se fija que tipos de choque se esta produciendo
+			
+			if(!self.estaEnElPiso()){
+				velocidad.acelerarY(gravedad.randomUpTo(gravedad-0.1)) //si no esta en el piso, actua la gravedad
+			}
+			else if(velocidad.vy().abs() < 1)
+				velocidad.factorVx(rozamiento) // si por el contrario esta en el piso y ademas casi no se mueve verticalmente entonces el roce comienza a actuar
+			
+			if(choque.chocaConParticula()){ //si choca con otra particula
+				
+				self.rebotarY() //rebota verticalmente
+				if(velocidad.vy() < 0 && velocidad.vy() > -1){ 	//si la velocidad vertical es pequeña y esta en una particula significa que
+					gravedad = 0								//se apoya sobre ella y por lo tanto la gravedad no actua
+					velocidad.factorVx(rozamiento)				// y ademas actua el rozamiento	y no se permite roce horizontal			
+					}											// para no toskearse con las particulas
+				else	
+					self.rebotarX()								//sino se puede rebota sin problemas	
+			}
+			
+			
+			
+			if(choque.chocaConTecho() || choque.chocaConPiso()) //si choca con el piso o con el techo rebota
+				self.rebotarY()
+				
+			if(choque.chocaConPared()) //si choca con alguna pared rebota
+				self.rebotarX()
+				
+			
+			
+			choque = new Choque()//el choque anterior se pierde y se genera uno nuevo
+			choque.irAlProximoChoque(position,velocidad) //si a la velocidad actual chocamos contra algo, ni bien ocura el presunto choque guardamos esa pocision
+														// sino nada
+			var x
+			var y                                                           
+			if(choque.hayProximoChoqueX())//Si se encontro un choque horizontal proximo vamos hasta alla
+				x = juego.limitarX(choque.choqueX())
+			else
+				x = juego.limitarX(position.x()+velocidad.vx().truncate(0)) //sino continuamos con nuestra velocidad normal
+				
 					
-					
-					cineticaActual.aplicarAceleracion()
-					c.moverse()
-					jugador1.moverse()
-					jugador2.moverse()
-						})
-	   	}
+			if(choque.hayProximoChoqueY()) //Si se encontro un choque vertical proximo vamos hasta alla
+				y = juego.limitarY(choque.choqueY()) 
+			else
+				y = juego.limitarY(position.y()+velocidad.vy().truncate(0))	//sino continuamos con nuestra velocidad normal
+			position.goTo(x,y)
+			
+		}
+		
 	}
-}
-//Cada particula tiene su propia cinetica, que describe sus velocidades y aceleraciones 
-//y nos proporciona metodos para modificarlas.
-// El motor de fisicas se encargara de modificar la cinetica de
-// las particulas y luego hacer que se muevan.
-// El motor de fisicas solo modifica y ordena a las
-// particulas moverse, pero el movimiento queda a cargo de
-// la propia particula, quedando definido unicamente por el estado
-// en que su cinetica se encuentre a la hora de moverse
-
-class Cinetica{
+	
+	class Velocidad{ //La pelota tiene su propia velocidad
 	var property vx = 0
 	var property vy = 0
-	var property ax = 0
-	var property ay = 0
-	var property puedePicar = false
-	var property energ_x = 0
-	var property energ_y = 0
 	
-	//posicion
-	method actualizarX(x) = juego.limitarX(x+vx) 
-	method actualizarY(y) = juego.limitarY(y+vy)
-	
-	//velocidad
-	method nuevaVelocidad(nuevaVx, nuevaVy){ 
-		self.nuevaVx(nuevaVx)
-		self.nuevaVy(nuevaVy)
+	method nuevaVelocidad(nvx,nvy){
+		vx = nvx
+		vy = nvy
 	}
-	method nuevaVx(nuevaVx){
-		vx = nuevaVx
-		energ_x = vx
-	}
-	method nuevaVy(nuevaVy){
-		vy = nuevaVy
-		energ_y = vy
-	}
-	method modificarVelocidad(aumentoX, aumentoY){ 
-		vx += aumentoX
-		vy += aumentoY
-		energ_x = vx
-		energ_y = vy
-	}
-	method factorVelocidad(factorx, factory){
-		vx *= factorx
-		vy *= factory
-		energ_x = vx
-		energ_y = vy
-	}
-	method frenar(){
-		vx = 0
-		vy = 0
+	method agregarVelocidad(avx, avy){
+		vx += avx
+		vy += avy
 	}
 	
-	//aceleracion
-	method nuevaAceleracion(nuevaAx, nuevaAy){ 
-		ax = nuevaAx
-		ay = nuevaAy
+	method factorVy(factor){
+		vy = vy*factor
 	}
-	method modificarAceleracion(aumentoX, aumentoY){ 
-		ax += aumentoX
-		ay += aumentoY
+	method factorVx(factor){
+		vx = vx*factor
 	}
-	method factorAceleracion(factorX, factorY){
-		ax *= factorX
-		ay *= factorY
+	method acelerarY(a){
+		vy += a
 	}
-	method aplicarAceleracion() {
-		self.modificarVelocidad(ax,ay)
+
+	
+	override method toString() = vx.toString().concat(" -> ".concat(vy.toString()))
+}
+}
+class Choque{ //Este es el objeto jugoso
+	
+	//pueden existir 4 tipos de choque y la pelota se comportara diferente segun el tipo de choque
+	var property chocaConPiso = false 
+	var property chocaConTecho = false
+	var property chocaConPared = false
+	var property chocaConParticula = false
+	
+	//estos mensajes sirven para que la pelota sepa si el choque se produjo o no
+	var property hayProximoChoqueY = false
+	var property hayProximoChoqueX = false
+	
+	//Una posicion auxiliar que se usa en hayAlguienEn() para fijarnos si en esa posicion hay alguna particula 
+	var property posicionBuscarParticulas = new MutablePosition()
+	
+	//Las posiciones en si del presunto choque
+	var property choqueX = null
+	var property choqueY = null
+	
+	override method toString() = choqueX.toString()+" -> "+choqueY.toString()+" : "+"["+chocaConPiso.toString()+", "+chocaConTecho.toString()+", "+chocaConPared.toString()+", "+chocaConParticula.toString()+"]"
+	
+	
+	method irAlProximoChoque(posicion, velocidad){
+		choqueX = posicion.x()						//nos pasan la posicion y la velocidad y analizamos la trayectoria que llevamos para buscar choques
+		choqueY = posicion.y()
+		self.analizarTrayectoria(velocidad)
+		//if(esNecesarioAnalizar)
 	}
+	
+	method hayAlguienEn(x,y, n){ //Busca n particulas en la posicion (x,y)
+		posicionBuscarParticulas.goTo(x,y)
+		return game.getObjectsIn(posicionBuscarParticulas).size() > n
+	}
+	
+	method analizarEstadoActual(posicion, velocidad){ //Ocurre al principio del movimiento de la pelota
+		choqueX = posicion.x()
+		choqueY = posicion.y()
+		
+		if(hayProximoChoqueX || hayProximoChoqueY || self.estaEnElLimite(choqueX, choqueY)){ //Si venimos de un choque o estamos en una posicion limite
+			
+			const posibleX = velocidad.vx()+choqueX //la posicion a donde nuestra velocidad nos quiere llevar
+			const posibleY = velocidad.vy()+choqueY
+			
+			chocaConPiso = posibleY <= juego.y0() //choca con el piso traspasa el piso
+			chocaConTecho = posibleY >= juego.h()-1 // si traspasa el techo
+			chocaConPared = posibleX <= juego.y0() || posibleX >= juego.w()-1 // si traspasa una pared
+			chocaConParticula = self.hayAlguienEn(choqueX,choqueY,1) // si choca con alguien en la posicion actual
+		
+		}
+		
+		
+	}
+	method estaEnElLimite(x,y) = self.estaEnLimiteX(x) || self.estaEnLimiteY(y)
+	method estaEnLimiteX(x) = x == juego.x0() || x == juego.w()-1 
+	method estaEnLimiteY(y) = y == juego.x0() || y == juego.h()-1  
+	method analizarSiHayProximoChoque(x,y){//analiza una posicion y si puede existir un choque en ella
+	
+		if(self.hayAlguienEn(x,y,0)){ //si hay una particula choca en ambas direcciones
+			hayProximoChoqueX = true
+			hayProximoChoqueY = true
+			choqueX = x
+			choqueY = y
+		}	
+			
+		if(!hayProximoChoqueX){ //una vez que se determina la x del choque no se vuelve a tocar mas
+			hayProximoChoqueX = self.estaEnLimiteX(x)
+			if(hayProximoChoqueX)
+				choqueX = x
+		}
+		
+		if(!hayProximoChoqueY){ //una vez que se determina la y del choque no se vuelve a tocar mas
+			hayProximoChoqueY = self.estaEnLimiteY(y)
+			if(hayProximoChoqueY)
+				choqueY = y
+		}
+		
+		
+		
+		
+	}
+	method analizarTrayectoria(velocidad){//Metodo complejo pero es donde esta el juguito dela carne y lo que hace a los choques posibles
+		
+		//A grandes rasgos lo que hace es dada una velocidad y la posicion actual, "dibuja" la recta que representaria la trayectoria desde
+		//la posicion actual hacia la nueva posicion, a la cual al velocidad nos lleva. Por dibujar se refiere a que obtiene cada punto de la recta
+		//desde el punto actual hacia el siguiente y evalua los choques de cada uno con el metodo analizarSiHayProximoChoque(). Esto lo hace 
+		//unicamente para el primero que encuentre
+		
+		//En realidad es una version modificada del algoritmo de Bresenham para decidir que pixeles dibujar de una recta dados su punto incial y final.
+		//El punto final solo sirve para calcular los deltas pero como ya tenemos las velocidades que son, en si, los deltas, no hace falta
+		//la posicion final
+		//Para que sea lo mas rapido posible primero calculamos todas las variables que necesitamos de entrada y despues ponemos a correr el algoritmo
+		
+		const deltaX = velocidad.vx().truncate(0)
+		const deltaXABS = deltaX.abs()
+		
+		const deltaY = velocidad.vy().truncate(0)
+		const deltaYABS = deltaY.abs()
+		
+		var signoX = 1
+		var signoY = 1
+		if(deltaX < 0)
+			signoX = -1
+		if(deltaY < 0)
+			signoY = -1
+		
+		const deltaX2 = 2*deltaX
+		const deltaX2ABS = deltaX2.abs()
+		
+		const deltaY2 = 2*deltaY
+		const deltaY2ABS = deltaY2.abs()
+		
+		
+		var xk = choqueX
+		var yk = choqueY
+		
+		
+		const pintarLinea = { deltaD2ABS, deltaIABS, deltaI2ABS, xEsIndependiente =>
+			 var p = deltaD2ABS - deltaIABS
+			 deltaIABS.times({ i =>
+			
+			if(p < 0){
+				if(xEsIndependiente)
+			 		xk += signoX
+			 	else
+			 		yk += signoY
+			 		
+			 	self.analizarSiHayProximoChoque(xk,yk)
+			 	p = p + deltaD2ABS
+				 }
+			else{
+			 	xk += signoX
+			 	yk += signoY
+			 	self.analizarSiHayProximoChoque(xk,yk)
+			 	p = p + deltaD2ABS - deltaI2ABS
+			 }
+				 
+				 })
+		}
+		
+		//self.analizarSiHayChoque(xk,yk)
+		
+		if(deltaYABS <= deltaXABS) //es decir |m| <= 1 -> conviene pensarlo como y = f(x)
+			pintarLinea.apply(deltaY2ABS, deltaXABS, deltaX2ABS, true)
+		else //es decir |m| > 1 -> conviene pensarlo como x = f(y)
+			pintarLinea.apply(deltaX2ABS, deltaYABS, deltaY2ABS, false)
+		
+	}
+}
+
+package graficos{
+	class Punto{ //Un puntito para dibujar
+		var property position = new MutablePosition()
+		var property image = "circle_32x32.png"
+		
+		method moverse(velocidad){
+			position.goRight(velocidad.vx())
+			position.goUp(velocidad.vy())
+		}
+	}
+	
+	object lineDrawer{//Basicame el algoritmo de bresenham pero ahora dibuja de verdad una linea desde (x1,y1) hasta (x2,y2) y devuelve los puntos en forma de array
+	method paint(x,y){
+			const puntoGenerado = new Punto(position = new MutablePosition(x = x, y = y))
+			game.addVisual(puntoGenerado)
+			return puntoGenerado
+		}
+	method line(x1,y1,x2,y2){
+		const deltaX = x2-x1
+		const deltaXABS = deltaX.abs()
+		
+		const puntos = []
+		
+		const deltaY = y2-y1
+		const deltaYABS = deltaY.abs()
+		
+		var signoX = 1
+		var signoY = 1
+		if(deltaX < 0)
+			signoX = -1
+		if(deltaY < 0)
+			signoY = -1
+		
+		const deltaX2 = 2*deltaX
+		const deltaX2ABS = deltaX2.abs()
+		
+		const deltaY2 = 2*deltaY
+		const deltaY2ABS = deltaY2.abs()
+		
+		
+		var xk = x1
+		var yk = y1
+		
+		
+		const pintarLinea = { deltaD2ABS, deltaIABS, deltaI2ABS, xEsIndependiente =>
+			 var p = deltaD2ABS - deltaIABS
+			 deltaIABS.times({ i =>
+			
+			if(p < 0){
+				if(xEsIndependiente)
+			 		xk += signoX
+			 	else
+			 		yk += signoY
+			 		
+			 	puntos.add(self.paint(xk,yk))
+			 	p = p + deltaD2ABS
+				 }
+			else{
+			 	xk += signoX
+			 	yk += signoY
+			 	puntos.add(self.paint(xk,yk))
+			 	p = p + deltaD2ABS - deltaI2ABS
+			 }
+				 
+				 })
+		}
+		
+		puntos.add(self.paint(xk,yk))
+		
+		if(deltaYABS <= deltaXABS) //es decir |m| <= 1 -> conviene pensarlo como y = f(x)
+			pintarLinea.apply(deltaY2ABS, deltaXABS, deltaX2ABS, true)
+		else //es decir |m| > 1 -> conviene pensarlo como x = f(y)
+			pintarLinea.apply(deltaX2ABS, deltaYABS, deltaY2ABS, false)
+		
+		return puntos
+	}
+}
 }

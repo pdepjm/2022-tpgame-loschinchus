@@ -1,6 +1,0 @@
-import wollok.game.*
-import fisicas.*
-
-program iniciar_juego {
-	juego.iniciar()
-}
