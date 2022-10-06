@@ -4,6 +4,7 @@ import fisicas.graficos.*
 import jugador.*
 import mutablePosition.*
 import arco.*
+import marcador.*
 
 object juego { //juego principal
 	const property w = 30 //ancho
@@ -32,6 +33,7 @@ object juego { //juego principal
 		arco1 = new Arco(altura = 6, largo = 6, arcoDerecho = true)
 		arco2 = new Arco(altura = 6, largo = 6, arcoDerecho = false)
 		
+		temporizador.inicializar()
 		
 		pelota = new Particula(image = "soccer_ball_32x32.png")
 		game.addVisual(pelota)
@@ -51,6 +53,7 @@ object juego { //juego principal
 		keyboard.enter().onPressDo({jugador2.patear()})
 		
 		game.onTick(30,"Movimiento",{self.moverElementos()})
+		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
 		
 		game.start()
 		
