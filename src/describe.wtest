@@ -1,0 +1,35 @@
+import wollok.game.*
+import fisicas.particulas.*
+import fisicas.graficos.*
+import jugador.*
+import mutablePosition.*
+import arco.*
+import marcador.*
+import juego.*
+
+describe "test de jugador"{
+	
+	method initialize()
+	{
+		juego.iniciar()
+	}
+	
+	test "el jugador se puede mover a derecha"{
+		var posicionActual = juego.jugador1().position().x()
+		juego.jugador1().izquierda()
+		assert.equals(juego.jugador1().position().x(), posicionActual + 1)
+				
+	}
+	
+	test "el jugador se puede mover a izquierda"{
+		var posicionActual = juego.jugador1().position().x()
+		juego.jugador1().derecha()
+		assert.equals(juego.jugador1().position().x(), posicionActual - 1)
+				
+	}
+	
+	test "el jugador puede patear"{
+		juego.jugador1().
+				
+	}
+}
