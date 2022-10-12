@@ -15,21 +15,24 @@ describe "test de jugador"{
 	}
 	
 	test "el jugador se puede mover a derecha"{
-		var posicionActual = juego.jugador1().position().x()
+		const posicionInicial = juego.jugador1().position().x()
 		juego.jugador1().izquierda()
-		assert.equals(juego.jugador1().position().x(), posicionActual + 1)
+		assert.equals(juego.jugador1().position().x(), posicionInicial + 1)
 				
 	}
 	
 	test "el jugador se puede mover a izquierda"{
-		var posicionActual = juego.jugador1().position().x()
+		const posicionInicial = juego.jugador1().position().x()
 		juego.jugador1().derecha()
-		assert.equals(juego.jugador1().position().x(), posicionActual - 1)
+		assert.equals(juego.jugador1().position().x(), posicionInicial - 1)
 				
 	}
 	
-	test "el jugador puede patear"{
-		juego.jugador1().
-				
+	test "el jugador puede patear la pelota"{
+		const inicialPelota = juego.pelota().position().x()
+		
+		5.times({ _ => juego.jugador1().izquierda() })
+		juego.jugador1().patear()
+		assert.that(juego.pelota().position().x() > inicialPelota)			
 	}
 }
