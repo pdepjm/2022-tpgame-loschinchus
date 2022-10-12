@@ -31,8 +31,14 @@ describe "test de jugador"{
 	test "el jugador puede patear la pelota"{
 		const inicialPelota = juego.pelota().position().x()
 		
-		5.times({ _ => juego.jugador1().izquierda() })
+		5.times({ _ => juego.jugador1().derecha() })
 		juego.jugador1().patear()
 		assert.that(juego.pelota().position().x() > inicialPelota)			
+	}
+	
+	test "el jugador puede hacer los goles"{
+		8.times({ _ => juego.jugador1().derecha() })
+		juego.jugador1().patear()
+		assert.that(juego.arco2().esGol())			
 	}
 }
