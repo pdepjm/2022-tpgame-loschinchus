@@ -57,12 +57,12 @@ object partido{
 	var property posPelota = new Pair(x = 15, y = 15)
 	
 	method iniciar(){
-		arco1 = new Arco(altura = 6, largo = 6, arcoDerecho = true)
-		arco2 = new Arco(altura = 6, largo = 6, arcoDerecho = false)
+		arco1 = new Arco(altura = 6, largo = 3, arcoDerecho = true)
+		arco2 = new Arco(altura = 6, largo = 3, arcoDerecho = false)
 		
 		temporizador.inicializar()
 		
-		pelota = new Particula(image = "soccer_ball_32x32.png")
+		pelota = new Pelota()
 		pelota.position().goTo(posPelota.key(), posPelota.value())
 		game.addVisual(pelota)
 		jugador1 = new Jugador(position = new MutablePosition(x = posJ1.key(), y = posJ1.value()), pelota = pelota)

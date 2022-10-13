@@ -4,7 +4,7 @@ import wollok.game.*
 
 package particulas{
 	class Particula{
-		var property image = "soccer_ball_32x32.png"
+		var property image = "circle_32x32.png"
 		var property position = new MutablePosition()
 		var property velocidad= new Velocidad()
 		var property gravedad = juego.g()// valor por defecto de gravedad
@@ -13,9 +13,7 @@ package particulas{
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
 		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
 		
-		method patear(fuerzaX,fuerzaY, signo){
-			velocidad.nuevaVelocidad( ( fuerzaX + velocidad.vx().abs() )*signo, fuerzaY + velocidad.vy().abs()) 
-		}
+		
 		
 		method rebotarX(){ //si la velocidad en x es lo suficientemente grande se puede rebotar
 			if(velocidad.vx().abs() > 1){
@@ -81,6 +79,11 @@ package particulas{
 			position.goTo(x,y)
 		}
 		
+	}
+	class Pelota inherits Particula(image = "soccer_ball_32x32.png"){
+		method patear(fuerzaX,fuerzaY, signo){
+			velocidad.nuevaVelocidad( ( fuerzaX + velocidad.vx().abs() )*signo, fuerzaY + velocidad.vy().abs()) 
+		}
 	}
 	
 	class Velocidad{ //La pelota tiene su propia velocidad

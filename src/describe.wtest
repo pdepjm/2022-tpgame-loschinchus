@@ -11,41 +11,47 @@ describe "Tests Jugador"{
 	
 	method initialize()
 	{
-		game.clear()
-		
+		juego.inicializar()
+		partido.iniciar()
 		
 	}
 	
-	test "Si un jugador se mueve a la derecha, su posicion en X aumenta o se mantiene igual"{
-		juego.inicializar()
-		game.start()
-		const posicionInicial = juego.jugador1().position().x()
-		juego.jugador1().derecha()
-		assert.equals(posicionInicial + 1, juego.jugador1().position().x())
+	test "Si un jugador se mueve a la derecha, su posicion en X aumenta en 1"{
+		
+		const posicionInicial = partido.jugador1().position().x()
+		partido.jugador1().derecha()
+		partido.moverElementos()
+		assert.equals(posicionInicial + 1, partido.jugador1().position().x())
 		game.clear()
 		
-		/*const velocidadInicial = juego.jugador1().velocidad().vx()
-		assert.that(juego.jugador1().velocidad().vx() > velocidadInicial)	*/
+		
 	}
-	/* 
-	test "el jugador se puede mover a izquierda"{
-		const posicionInicial = juego.jugador1().position().x()
-		juego.jugador1().derecha()
-		assert.equals(juego.jugador1().position().x(), posicionInicial - 1)
+	 
+	test "Si un jugador se mueve a la izquierda, su posicion en X disminuye en 1"{
+		const posicionInicial = partido.jugador1().position().x()
+		partido.jugador1().izquierda()
+		partido.moverElementos()		
+		assert.equals(partido.jugador1().position().x(), posicionInicial - 1)
 				
 	}
 	
-	test "el jugador puede patear la pelota"{
-		const inicialPelota = juego.pelota().position().x()
-		
-		5.times({ _ => juego.jugador1().derecha() })
-		juego.jugador1().patear()
-		assert.that(juego.pelota().position().x() > inicialPelota)			
+	test "Si un jugador salta, su velocidad en Y aumenta"{
+		const velocidadInicial = partido.jugador1().velocidad().vy()		
+		partido.jugador1().saltar()
+		assert.that(partido.jugador1().velocidad().vy() > velocidadInicial)			
 	}
-	
-	test "el jugador puede hacer los goles"{
-		8.times({ _ => juego.jugador1().derecha() })
-		juego.jugador1().patear()
-		assert.that(juego.arco2().estaAdentro())			
-	}*/
+}describe "Tests de Pelota"{
+	method initialize()
+	{
+		juego.inicializar()
+		partido.iniciar()
+		
+	}
+	test "Si la pelota es pateada, su velocidad aumenta en ambas direcciones"{
+		const velocidadInicialX = partido.pelota().velocidad().vx()		
+		const velocidadInicialY = partido.pelota().velocidad().vy()		
+		partido.pelota().patear()
+		assert.that(partido.pelota().velocidad().vx() > velocidadInicialX)
+		assert.that(partido.pelota().velocidad().vy() > velocidadInicialY)
+	}
 }
