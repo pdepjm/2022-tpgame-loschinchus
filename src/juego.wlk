@@ -131,7 +131,8 @@ object partido{
 			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()})  })
 			// podemos setear la velocidad en 0 de los jugadores
 			marcador2.aumentar()
-			self.saqueDelMedio()
+			self.saqueDelMedio() 
+			// PUSH
 		}
 	}
 }
