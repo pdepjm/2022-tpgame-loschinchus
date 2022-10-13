@@ -30,6 +30,7 @@ object juego { //juego principal
 		game.cellSize(cellSize)
 		game.ground("grid.png")
 		game.title("Juego")
+		game.boardGround("playa.jpg")
 		
 	}
 	
