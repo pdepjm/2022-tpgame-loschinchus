@@ -274,8 +274,9 @@ package graficos{
 	}
 	
 	object lineDrawer{//Basicame el algoritmo de bresenham pero ahora dibuja de verdad una linea desde (x1,y1) hasta (x2,y2) y devuelve los puntos en forma de array
+	var property imagen = "circle_32x32.png"
 	method paint(x,y){
-			const puntoGenerado = new Punto(position = new MutablePosition(x = x, y = y))
+			const puntoGenerado = new Punto(position = new MutablePosition(x = x, y = y), image = imagen)
 			game.addVisual(puntoGenerado)
 			return puntoGenerado
 		}

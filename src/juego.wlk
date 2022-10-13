@@ -86,7 +86,7 @@ object partido{
 		keyboard.up().onPressDo({jugador2.saltar()})
 		keyboard.enter().onPressDo({jugador2.patear()})
 		
-		game.onTick(30,"Movimiento",{self.moverElementos()})
+		game.onTick(15,"Movimiento",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
 		self.reiniciar()
 	}
@@ -116,11 +116,20 @@ object partido{
 		self.resetearElemento(jugador2,posJ2)
 	}
 	method chequearGol(){
+		
+		
 		if(arco1.estaAdentro(pelota.position())){
+			game.removeTickEvent("Movimiento")
+			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()}) })
+			// podemos setear la velocidad en 0 de los jugadores
 			marcador1.aumentar()
+			
 			self.saqueDelMedio()
 		}
 		else if(arco2.estaAdentro(pelota.position())){
+			game.removeTickEvent("Movimiento")
+			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()})  })
+			// podemos setear la velocidad en 0 de los jugadores
 			marcador2.aumentar()
 			self.saqueDelMedio()
 		}

@@ -20,7 +20,7 @@ class Jugador{
 	var property gravedad = juego.g()
 	var property rozamiento = 0
 	
-	var property cabeza
+	//var property cabeza
 	
 	var property hayRozamiento = true
 	
@@ -64,7 +64,6 @@ class Jugador{
 		const nuevaX = position.x() + velocidad.vx()
 		const nuevaX2 = nuevaX+1
 		const nuevaY = position.y()+velocidad.vy()
-		
 		const vx1 = juego.limitarX(nuevaX) - position.x()
 		const vx2 = juego.limitarX(nuevaX2) - (position.x()+1)
 		

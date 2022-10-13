@@ -16,13 +16,19 @@ class Arco{
 		if(arcoDerecho){
 			inicioX = juego.x0()
 			finX = inicioX+largo
-			return lineDrawer.line(inicioX,altura,finX,altura)
+			lineDrawer.imagen("arco.jpg")
+			const listaPuntos =  lineDrawer.line(inicioX,altura,finX,altura)
+			lineDrawer.imagen("circle_32x32.png")
+			return listaPuntos
 		}
 		else{
 			signoX = -1
 			finX = juego.w()-1
 			inicioX = finX-largo
-			return lineDrawer.line(inicioX,altura,finX,altura)
+			lineDrawer.imagen("arco.jpg")
+			const listaPuntos =  lineDrawer.line(inicioX,altura,finX,altura)
+			lineDrawer.imagen("circle_32x32.png")
+			return listaPuntos
 		}
 	}
 	
