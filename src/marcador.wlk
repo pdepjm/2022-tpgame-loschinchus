@@ -9,6 +9,70 @@ class Numero{
 	var property position = new MutablePosition(x = x, y = y)
 	
 	method image() = n.toString()+".png"
+	method aumentar(){
+		if(n == 9)
+			n = 0
+		else
+			n++
+	}
+	method descontar(){
+		if(n == 0)
+			n = 9
+		else
+			n--
+	}
+}
+
+class Contador{
+	
+	var x
+	var y
+	var cantDigitos = 1
+	var property haciaDerecha = true
+	var property valor = 0
+	var property numeros = []
+	
+	
+	method reiniciar(){
+		numeros.forEach({num =>
+			game.removeVisual(num)
+			
+		}
+		)
+		const nuevoNumero = new Numero(n = 0, x = x, y = y)
+		game.addVisual(nuevoNumero)
+		numeros = [nuevoNumero]
+	}
+	method agregarNumero(){
+		
+		const nuevoNumero = new Numero(n = 1, x = x, y = y)
+		if(haciaDerecha)
+			numeros.forEach({n =>
+					n.position().goRight(2)
+				}
+			)
+		else{
+			nuevoNumero.position().goLeft(2*cantDigitos)
+		}
+		numeros.add(nuevoNumero)
+		game.addVisual(nuevoNumero)
+		cantDigitos++
+	}
+	method aumentar(){
+		valor++
+		var seAumento = true
+		numeros.forEach({ num =>
+				if(seAumento){
+					num.aumentar()
+					if(num.n() > 0)
+						seAumento  = false
+				}
+				
+		})
+		if(seAumento)
+			self.agregarNumero()
+	}
+	
 }
 
 object contMin {
@@ -88,3 +152,4 @@ object temporizador{
 	}
 	
 }
+

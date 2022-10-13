@@ -5,7 +5,7 @@ import wollok.game.*
 package particulas{
 	class Particula{
 		var property image = "soccer_ball_32x32.png"
-		var property position = new MutablePosition(x=15,y=15)
+		var property position = new MutablePosition()
 		var property velocidad= new Velocidad()
 		var property gravedad = juego.g()// valor por defecto de gravedad
 		var property choque = new Choque() //objeto choque
@@ -76,6 +76,9 @@ package particulas{
 				y = juego.limitarY(position.y()+velocidad.vy().truncate(0))	//sino continuamos con nuestra velocidad normal
 			position.goTo(x,y)
 			
+		}
+		method moverse(x,y){
+			position.goTo(x,y)
 		}
 		
 	}

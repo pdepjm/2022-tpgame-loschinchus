@@ -9,7 +9,7 @@ class Jugador{
 	var property pelota 
 	var property position = new MutablePosition(x = 8, y = 0)
 	var property velocidad = new Velocidad()
-	var property puntos = lineDrawer.line(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.line(position.x()+1,position.y(),position.x()+1,position.y()+2)
+	var property puntos = self.devolverPuntos()
 	var property gravedad = juego.g()
 	var property rozamiento = 0
 	
@@ -42,6 +42,15 @@ class Jugador{
 		hayRozamiento = true
 		
 	}
+	method moverse(x,y){
+		puntos.forEach( {
+			p =>
+			game.removeVisual(p)
+		}
+		)
+		position.goTo(x,y)
+		puntos = self.devolverPuntos()
+	}
 	method limitarVelocidad(){
 		const nuevaX = position.x() + velocidad.vx()
 		const nuevaX2 = nuevaX+1
@@ -61,7 +70,7 @@ class Jugador{
 	method moverPuntos(){
 		puntos.forEach({p => p.moverse(velocidad)})
 	}
-	
+	method devolverPuntos() = lineDrawer.line(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.line(position.x()+1,position.y(),position.x()+1,position.y()+2)
 	method izquierda(){
 		hayRozamiento = false
 		self.empujar(-1)

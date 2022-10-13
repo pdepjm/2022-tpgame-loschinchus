@@ -26,6 +26,6 @@ class Arco{
 		}
 	}
 	
-	method esGol(posicion) = posicion.x().between(inicioX,finX-signoX) && posicion.y().between(0,altura-1)
+	method estaAdentro(posicion) = posicion.x().between(inicioX,finX-signoX) && posicion.y().between(0,altura-1)
 	
 }

@@ -7,20 +7,27 @@ import arco.*
 import marcador.*
 import juego.*
 
-describe "test de jugador"{
+describe "Tests Jugador"{
 	
 	method initialize()
 	{
-		juego.iniciar()
+		game.clear()
+		
+		
 	}
 	
-	test "el jugador se puede mover a derecha"{
+	test "Si un jugador se mueve a la derecha, su posicion en X aumenta o se mantiene igual"{
+		juego.inicializar()
+		game.start()
 		const posicionInicial = juego.jugador1().position().x()
-		juego.jugador1().izquierda()
-		assert.equals(juego.jugador1().position().x(), posicionInicial + 1)
-				
+		juego.jugador1().derecha()
+		assert.equals(posicionInicial + 1, juego.jugador1().position().x())
+		game.clear()
+		
+		/*const velocidadInicial = juego.jugador1().velocidad().vx()
+		assert.that(juego.jugador1().velocidad().vx() > velocidadInicial)	*/
 	}
-	
+	/* 
 	test "el jugador se puede mover a izquierda"{
 		const posicionInicial = juego.jugador1().position().x()
 		juego.jugador1().derecha()
@@ -39,6 +46,6 @@ describe "test de jugador"{
 	test "el jugador puede hacer los goles"{
 		8.times({ _ => juego.jugador1().derecha() })
 		juego.jugador1().patear()
-		assert.that(juego.arco2().esGol())			
-	}
+		assert.that(juego.arco2().estaAdentro())			
+	}*/
 }
