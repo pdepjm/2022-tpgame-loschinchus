@@ -64,7 +64,7 @@ object partido{
 		
 		pelota = new Pelota()
 		pelota.position().goTo(posPelota.key(), posPelota.value())
-		game.addVisual(pelota)
+
 		jugador1 = new Jugador(position = new MutablePosition(x = posJ1.key(), y = posJ1.value()), pelota = pelota)
 		jugador2 = new Jugador(position = new MutablePosition(x = posJ2.key(), y = posJ2.value()), pateaHaciaDerecha = false, pelota = pelota)
 		
@@ -72,6 +72,8 @@ object partido{
 		marcador2 = new Contador(x = juego.w()-1-3, y = 15)
 		
 		elementos.addAll([pelota,jugador1,jugador2])
+		
+		game.addVisual(pelota)
 		
 		keyboard.d().onPressDo({jugador1.derecha()})
 		keyboard.a().onPressDo({jugador1.izquierda()})
@@ -109,8 +111,8 @@ object partido{
 	}
 	method saqueDelMedio(){
 		self.resetearElemento(pelota,posPelota)
-		//self.resetearElemento(jugador1,posJ1) el juego se cieraaaaaaaaa
-		//self.resetearElemento(jugador2,posJ2)
+		self.resetearElemento(jugador1,posJ1)
+		self.resetearElemento(jugador2,posJ2)
 	}
 	method chequearGol(){
 		if(arco1.estaAdentro(pelota.position())){
