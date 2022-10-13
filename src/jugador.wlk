@@ -4,6 +4,13 @@ import juego.*
 import wollok.game.*
 import mutablePosition.*
 
+class Imagen{
+	var image
+	var property position
+	
+	method image() = image
+}
+
 class Jugador{
 	var property pateaHaciaDerecha = true
 	var property pelota 
@@ -12,6 +19,8 @@ class Jugador{
 	var property puntos = self.devolverPuntos()
 	var property gravedad = juego.g()
 	var property rozamiento = 0
+	
+	var property cabeza
 	
 	var property hayRozamiento = true
 	
