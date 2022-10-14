@@ -4,23 +4,16 @@ import juego.*
 import wollok.game.*
 import mutablePosition.*
 
-class Imagen{
-	var image
-	var property position
-	
-	method image() = image
+class Imagen inherits Punto{
 }
 
 class Jugador{
 	var property pateaHaciaDerecha = true
-	var property pelota 
 	var property position = new MutablePosition(x = 8, y = 0)
 	var property velocidad = new Velocidad()
 	var property puntos = self.devolverPuntos()
 	var property gravedad = juego.g()
 	var property rozamiento = 0
-	
-	//var property cabeza
 	
 	var property hayRozamiento = true
 	
@@ -33,7 +26,7 @@ class Jugador{
 
 	
 	method estaEnElPiso() = position.y() == juego.y0()
-	
+
 	method moverse(){
 		
 		if(self.estaEnElPiso() && hayRozamiento)
@@ -108,19 +101,31 @@ class Jugador{
 			pelota.velocidad().agregarVelocidad(signo*fuerzaX + velocidad.vx(), 0)
 		
 	}
-	method patear(){
-		posicionParaEvaluar.goTo(position.x(), position.y())
-			
-		if(pateaHaciaDerecha){
-			posicionParaEvaluar.goRight(1)
-			if(self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.right(1)))
-				pelota.patear(2*fuerzaX, fuerzaY, 1)
-		}
-		else{
-			
-			if(self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.left(1)) )
-				pelota.patear(2*fuerzaX, fuerzaY, -1)
-		}
-	}
+	method patear()
 	
+}
+
+
+object jugadorIzq inherits Jugador{
+	
+	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.right(1))
+	
+	override method patear(){
+		posicionParaEvaluar.goTo(position.x(), position.y())
+		posicionParaEvaluar.goRight(1)
+		
+		if(self.estaLaPelotaAlLado())
+			pelota.patear(2*fuerzaX, fuerzaY, 1)
+	
+	}
+}
+object jugadorDer inherits Jugador{
+	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.left(1))
+	
+	override method patear(){
+		posicionParaEvaluar.goTo(position.x(), position.y())
+
+		if(self.estaLaPelotaAlLado())
+			pelota.patear(2*fuerzaX, fuerzaY, -1)
+	}
 }

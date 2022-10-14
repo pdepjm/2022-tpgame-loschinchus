@@ -45,48 +45,37 @@ object juego { //juego principal
 
 object partido{
 	const property elementos = []
-	var property jugador1
-	var property jugador2
-	var property marcador1
-	var property marcador2
 	var property arco1
-	var property arco2
-	var property pelota
-	
+	var property arco2	
 	var property posJ1 = new Pair(x = 8, y = 0)
 	var property posJ2 = new Pair(x = juego.w()-8, y = 0)
 	var property posPelota = new Pair(x = 15, y = 15)
 	
 	method iniciar(){
-		arco1 = new Arco(altura = 6, largo = 3, arcoDerecho = true)
-		arco2 = new Arco(altura = 6, largo = 3, arcoDerecho = false)
+		arco1 = new Arco(altura = 6, largo = 3)
+		arco2 = new Arco(altura = 6, largo = 3)
+		
+		arco1.dibujarALaIzquierda()
+		arco2.dibujarALaDerecha()
 		
 		temporizador.inicializar()
 		
-		pelota = new Pelota()
 		pelota.position().goTo(posPelota.key(), posPelota.value())
-
-		jugador1 = new Jugador(position = new MutablePosition(x = posJ1.key(), y = posJ1.value()), pelota = pelota)
-		jugador2 = new Jugador(position = new MutablePosition(x = posJ2.key(), y = posJ2.value()), pateaHaciaDerecha = false, pelota = pelota)
-		
-		marcador1 = new Contador(x = 3, y = 15)
-		marcador2 = new Contador(x = juego.w()-1-3, y = 15)
-		
-		elementos.addAll([pelota,jugador1,jugador2])
+		elementos.addAll([pelota,jugadorIzq,jugadorDer])
 		
 		game.addVisual(pelota)
 		
-		keyboard.d().onPressDo({jugador1.derecha()})
-		keyboard.a().onPressDo({jugador1.izquierda()})
-		keyboard.w().onPressDo({jugador1.saltar()})
-		keyboard.space().onPressDo({jugador1.patear()})
+		keyboard.d().onPressDo({jugadorIzq.derecha()})
+		keyboard.a().onPressDo({jugadorIzq.izquierda()})
+		keyboard.w().onPressDo({jugadorIzq.saltar()})
+		keyboard.space().onPressDo({jugadorIzq.patear()})
 		
-		keyboard.right().onPressDo({jugador2.derecha()})
-		keyboard.left().onPressDo({jugador2.izquierda()})
-		keyboard.up().onPressDo({jugador2.saltar()})
-		keyboard.enter().onPressDo({jugador2.patear()})
+		keyboard.right().onPressDo({jugadorDer.derecha()})
+		keyboard.left().onPressDo({jugadorDer.izquierda()})
+		keyboard.up().onPressDo({jugadorDer.saltar()})
+		keyboard.enter().onPressDo({jugadorDer.patear()})
 		
-		game.onTick(15,"Movimiento",{self.moverElementos()})
+		game.onTick(30,"Movimiento",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
 		self.reiniciar()
 	}
@@ -106,33 +95,21 @@ object partido{
 	}
 	method reiniciar(){
 		self.saqueDelMedio()
-		marcador1.reiniciar()
-		marcador2.reiniciar()
+		arco1.reiniciarMarcador()
+		arco2.reiniciarMarcador()
 		temporizador.resetear(1)
 	}
 	method saqueDelMedio(){
 		self.resetearElemento(pelota,posPelota)
-		self.resetearElemento(jugador1,posJ1)
-		self.resetearElemento(jugador2,posJ2)
+		self.resetearElemento(jugadorIzq,posJ1)
+		self.resetearElemento(jugadorDer,posJ2)
 	}
 	method chequearGol(){
-		
-		
-		if(arco1.estaAdentro(pelota.position())){
+		const posicionPelota = pelota.position()
+		if(arco1.esGol(posicionPelota) || arco2.esGol(posicionPelota)){
 			game.removeTickEvent("Movimiento")
-			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()}) })
-			// podemos setear la velocidad en 0 de los jugadores
-			marcador1.aumentar()
-			
+			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()})})
 			self.saqueDelMedio()
-		}
-		else if(arco2.estaAdentro(pelota.position())){
-			game.removeTickEvent("Movimiento")
-			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()})  })
-			// podemos setear la velocidad en 0 de los jugadores
-			marcador2.aumentar()
-			self.saqueDelMedio() 
-			// PUSH
 		}
 	}
 }

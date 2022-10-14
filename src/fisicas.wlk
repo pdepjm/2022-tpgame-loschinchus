@@ -80,9 +80,9 @@ package particulas{
 		}
 		
 	}
-	class Pelota inherits Particula(image = "soccer_ball_32x32.png"){
+	object pelota inherits Particula(image = "soccer_ball_32x32.png"){
 		method patear(fuerzaX,fuerzaY, signo){
-			velocidad.nuevaVelocidad( ( fuerzaX + velocidad.vx().abs() )*signo, fuerzaY + velocidad.vy().abs()) 
+			velocidad.nuevaVelocidad(  (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()) 
 		}
 	}
 	
@@ -337,6 +337,13 @@ package graficos{
 		else //es decir |m| > 1 -> conviene pensarlo como x = f(y)
 			pintarLinea.apply(deltaX2ABS, deltaYABS, deltaY2ABS, false)
 		
+		return puntos
+	}
+	method line(x1,y1,x2,y2,image){
+		const viejaImagen = imagen
+		imagen = image
+		const puntos = self.line(x1,y1,x2,y2)
+		imagen = viejaImagen
 		return puntos
 	}
 }
