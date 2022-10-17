@@ -15,7 +15,7 @@ class Jugador{
 	var property rozamiento = 0
 	
 	var property imagenCabeza
-	//var property imagenPie
+	var property imagenPie
 	
 	var property hayRozamiento = true
 	
@@ -29,19 +29,19 @@ class Jugador{
 	const posicionCabeza = new MutablePosition(x = position.x(), y = position.y()+1)
 	
 	const cabeza = {const img = new Imagen(position = posicionCabeza, image = imagenCabeza) game.addVisual(img) return img}.apply()
-	//const pie = self.inicializarImagen(imagenPie, position)
+	const pie = {const img = new Imagen(position = position, image = imagenPie) game.addVisual(img) return img}.apply()
 
 	
 	method cambiarCabeza(imagen){
 		cabeza.cambiarImagen(imagen)
 	}
 	method cambiarPie(imagen){
-		//pie.cambiarImagen(imagen)
+		pie.cambiarImagen(imagen)
 	}
 
 	method moverVisuales(){
 		cabeza.moverse(velocidad)
-		//imagenPie.moverse(velocidad)
+		//pie.moverse(velocidad)
 	}
 	
 	
@@ -133,7 +133,7 @@ class Jugador{
 }
 
 
-object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png"){
+object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "botinDerecho.png"){
 
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.right(1))
 	
@@ -141,17 +141,21 @@ object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png"){
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		posicionParaEvaluar.goRight(1)
 		
+		self.cambiarPie("botinDerechoPatea.png")
+		game.schedule(30,{self.cambiarPie(imagenPie)})
+		
 		if(self.estaLaPelotaAlLado())
 			pelota.patear(2*fuerzaX, fuerzaY, 1)
 	
 	}
 }
-object jugadorDer inherits Jugador(imagenCabeza = "Messi.png"){
+object jugadorDer inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "botinIzquierdo.png"){
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.left(1))
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
-
+		self.cambiarPie("botinIzquierdoPatea.png")
+		game.schedule(30,{self.cambiarPie(imagenPie)})
 		if(self.estaLaPelotaAlLado())
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
 	}
