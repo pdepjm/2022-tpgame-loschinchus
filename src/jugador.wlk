@@ -4,8 +4,7 @@ import juego.*
 import wollok.game.*
 import mutablePosition.*
 
-class Imagen inherits Punto{
-}
+
 
 class Jugador{
 	var property pateaHaciaDerecha = true
@@ -15,6 +14,9 @@ class Jugador{
 	var property gravedad = juego.g()
 	var property rozamiento = 0
 	
+	var property imagenCabeza
+	var property imagenPie
+	
 	var property hayRozamiento = true
 	
 	var property fuerzaX = 2 //fuerza con que patea
@@ -22,11 +24,34 @@ class Jugador{
 	
 	var property velX = 1 //Velocidad de empuje
 	
-	var property posicionParaEvaluar = new MutablePosition()
+	const posicionParaEvaluar = new MutablePosition()
+	
+	const posicionCabeza = new MutablePosition(x = position.x(), y = position.y()+1)
+	
+	const cabeza = {const img = new Imagen(position = posicionCabeza, image = imagenCabeza) game.addVisual(img) return img}.apply()
+	const pie = {const img = new Imagen(position = position, image = imagenPie) game.addVisual(img) return img}.apply()
 
 	
-	method estaEnElPiso() = position.y() == juego.y0()
+	method cambiarCabeza(imagen){
+		cabeza.cambiarImagen(imagen)
+	}
+	method cambiarPie(imagen){
+		pie.cambiarImagen(imagen)
+	}
 
+	method moverVisuales(){
+		cabeza.moverse(velocidad)
+		//pie.moverse(velocidad)
+	}
+	
+	
+	method estaEnElPiso() = position.y() == juego.y0()
+	
+	method resetear(){
+		velocidad.nuevaVelocidad(0,0)
+		self.moverse(position.xInicial(),position.yInicial())
+	}
+	
 	method moverse(){
 		
 		if(self.estaEnElPiso() && hayRozamiento)
@@ -40,6 +65,7 @@ class Jugador{
 		position.goUp(velocidad.vy())
 		
 		self.moverPuntos()
+		self.moverVisuales()
 		
 		hayRozamiento = true
 		
@@ -51,6 +77,7 @@ class Jugador{
 		}
 		)
 		position.goTo(x,y)
+		posicionCabeza.goTo(x,y+1)
 		puntos = self.devolverPuntos()
 	}
 	method limitarVelocidad(){
@@ -71,16 +98,16 @@ class Jugador{
 	method moverPuntos(){
 		puntos.forEach({p => p.moverse(velocidad)})
 	}
-	method devolverPuntos() = lineDrawer.line(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.line(position.x()+1,position.y(),position.x()+1,position.y()+2)
+	method devolverPuntos() = lineDrawer.dibujarPuntosInvisibles(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.dibujarPuntosInvisibles(position.x()+1,position.y(),position.x()+1,position.y()+2)
 	method izquierda(){
 		hayRozamiento = false
-		self.empujar(-1)
-		velocidad.agregarVelocidad(-velX,0)
+		self.empujarPelota(-1)
+		velocidad.nuevaVelocidad(-velX,0)
 	}
 	method derecha(){
 		hayRozamiento = false
-		self.empujar(1)
-		velocidad.agregarVelocidad(velX,0)
+		self.empujarPelota(1)
+		velocidad.nuevaVelocidad(velX,0)
 	}
 	method saltar(){
 		if(self.estaEnElPiso())
@@ -89,7 +116,7 @@ class Jugador{
 
 	method estaLaPelota(posicion) = game.getObjectsIn(posicion).contains(pelota)
 	
-	method empujar(signo){
+	method empujarPelota(signo){
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		
 		if(signo < 0)
@@ -106,25 +133,29 @@ class Jugador{
 }
 
 
-object jugadorIzq inherits Jugador{
-	
+object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "botinDerecho.png"){
+
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.right(1))
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		posicionParaEvaluar.goRight(1)
 		
+		self.cambiarPie("botinDerechoPatea.png")
+		game.schedule(30,{self.cambiarPie(imagenPie)})
+		
 		if(self.estaLaPelotaAlLado())
 			pelota.patear(2*fuerzaX, fuerzaY, 1)
 	
 	}
 }
-object jugadorDer inherits Jugador{
+object jugadorDer inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "botinIzquierdo.png"){
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.left(1))
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
-
+		self.cambiarPie("botinIzquierdoPatea.png")
+		game.schedule(30,{self.cambiarPie(imagenPie)})
 		if(self.estaLaPelotaAlLado())
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
 	}

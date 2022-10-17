@@ -13,7 +13,10 @@ package particulas{
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
 		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
 		
-		
+		method resetear(){
+			position.reestablecer()
+			velocidad.nuevaVelocidad(0,0)
+		}
 		
 		method rebotarX(){ //si la velocidad en x es lo suficientemente grande se puede rebotar
 			if(velocidad.vx().abs() > 1){
@@ -82,7 +85,7 @@ package particulas{
 	}
 	object pelota inherits Particula(image = "soccer_ball_32x32.png"){
 		method patear(fuerzaX,fuerzaY, signo){
-			velocidad.nuevaVelocidad(  (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()) 
+			velocidad.nuevaVelocidad( (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()  ) 
 		}
 	}
 	
@@ -263,24 +266,28 @@ class Choque{ //Este es el objeto jugoso
 }
 
 package graficos{
-	class Punto{ //Un puntito para dibujar
+	class PuntoInvisible{ //Hace un punto invisible
 		var property position = new MutablePosition()
-		var property image = "circle_32x32.png"
 		
 		method moverse(velocidad){
 			position.goRight(velocidad.vx())
 			position.goUp(velocidad.vy())
 		}
 	}
+	class Punto inherits PuntoInvisible{ //Un puntito para dibujar
+		var image = "circle_32x32.png"
+		method image() = image
+	}
+	class Imagen inherits PuntoInvisible{
+		var image
+		method cambiarImagen(nuevaImagen){
+			image = nuevaImagen
+		}
+		method image() = image
+	}
 	
 	object lineDrawer{//Basicame el algoritmo de bresenham pero ahora dibuja de verdad una linea desde (x1,y1) hasta (x2,y2) y devuelve los puntos en forma de array
-	var property imagen = "circle_32x32.png"
-	method paint(x,y){
-			const puntoGenerado = new Punto(position = new MutablePosition(x = x, y = y), image = imagen)
-			game.addVisual(puntoGenerado)
-			return puntoGenerado
-		}
-	method line(x1,y1,x2,y2){
+	method line(x1,y1,x2,y2, efecto){
 		const deltaX = x2-x1
 		const deltaXABS = deltaX.abs()
 		
@@ -317,20 +324,21 @@ package graficos{
 			 	else
 			 		yk += signoY
 			 		
-			 	puntos.add(self.paint(xk,yk))
+			 	puntos.add(efecto.apply(xk,yk))
 			 	p = p + deltaD2ABS
 				 }
 			else{
 			 	xk += signoX
 			 	yk += signoY
-			 	puntos.add(self.paint(xk,yk))
+			 	puntos.add(efecto.apply(xk,yk))
 			 	p = p + deltaD2ABS - deltaI2ABS
 			 }
 				 
 				 })
 		}
 		
-		puntos.add(self.paint(xk,yk))
+		puntos.add(efecto.apply(xk,yk))
+		//puntos.add(self.paint(xk,yk))
 		
 		if(deltaYABS <= deltaXABS) //es decir |m| <= 1 -> conviene pensarlo como y = f(x)
 			pintarLinea.apply(deltaY2ABS, deltaXABS, deltaX2ABS, true)
@@ -339,12 +347,9 @@ package graficos{
 		
 		return puntos
 	}
-	method line(x1,y1,x2,y2,image){
-		const viejaImagen = imagen
-		imagen = image
-		const puntos = self.line(x1,y1,x2,y2)
-		imagen = viejaImagen
-		return puntos
-	}
+	method dibujarPuntosInvisibles(x1,y1,x2,y2) = self.line(x1,y1,x2,y2,{x,y => const punto = new PuntoInvisible(position = new MutablePosition(x = x, y = y)) game.addVisual(punto) return punto })
+	method dibujarPuntos(x1,y1,x2,y2) = self.line(x1,y1,x2,y2,{x,y => const punto = new Punto(position = new MutablePosition(x = x, y = y)) game.addVisual(punto) return punto})
+	method dibujarImagenes(x1,y1,x2,y2,imagen) = self.line(x1,y1,x2,y2,{x,y => const img = new Imagen(position = new MutablePosition(x = x, y = y), image = imagen) game.addVisual(img) return img})
+	
 }
 }
