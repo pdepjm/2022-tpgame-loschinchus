@@ -9,7 +9,6 @@ import marcador.*
 object juego { //juego principal
 	const property w = 30 //ancho
 	const property h = 20 //alto
-	const property proporcionArco = 1/6
 	const property y0 = 0 //suelo
 	const property x0 = 0 //pared izq
 	const property cellSize = 32
