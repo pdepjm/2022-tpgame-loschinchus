@@ -4,8 +4,7 @@ import juego.*
 import wollok.game.*
 import mutablePosition.*
 
-class Imagen inherits Punto{
-}
+
 
 class Jugador{
 	var property pateaHaciaDerecha = true
@@ -15,6 +14,9 @@ class Jugador{
 	var property gravedad = juego.g()
 	var property rozamiento = 0
 	
+	var property imagenCabeza
+	//var property imagenPie
+	
 	var property hayRozamiento = true
 	
 	var property fuerzaX = 2 //fuerza con que patea
@@ -23,7 +25,25 @@ class Jugador{
 	var property velX = 1 //Velocidad de empuje
 	
 	const posicionParaEvaluar = new MutablePosition()
+	
+	const posicionCabeza = new MutablePosition(x = position.x(), y = position.y()+1)
+	
+	const cabeza = {const img = new Imagen(position = posicionCabeza, image = imagenCabeza) game.addVisual(img) return img}.apply()
+	//const pie = self.inicializarImagen(imagenPie, position)
 
+	
+	method cambiarCabeza(imagen){
+		cabeza.cambiarImagen(imagen)
+	}
+	method cambiarPie(imagen){
+		//pie.cambiarImagen(imagen)
+	}
+
+	method moverVisuales(){
+		cabeza.moverse(velocidad)
+		//imagenPie.moverse(velocidad)
+	}
+	
 	
 	method estaEnElPiso() = position.y() == juego.y0()
 	
@@ -45,6 +65,7 @@ class Jugador{
 		position.goUp(velocidad.vy())
 		
 		self.moverPuntos()
+		self.moverVisuales()
 		
 		hayRozamiento = true
 		
@@ -56,6 +77,7 @@ class Jugador{
 		}
 		)
 		position.goTo(x,y)
+		posicionCabeza.goTo(x,y+1)
 		puntos = self.devolverPuntos()
 	}
 	method limitarVelocidad(){
@@ -76,7 +98,7 @@ class Jugador{
 	method moverPuntos(){
 		puntos.forEach({p => p.moverse(velocidad)})
 	}
-	method devolverPuntos() = lineDrawer.line(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.line(position.x()+1,position.y(),position.x()+1,position.y()+2)
+	method devolverPuntos() = lineDrawer.dibujarPuntosInvisibles(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.dibujarPuntosInvisibles(position.x()+1,position.y(),position.x()+1,position.y()+2)
 	method izquierda(){
 		hayRozamiento = false
 		self.empujarPelota(-1)
@@ -111,8 +133,8 @@ class Jugador{
 }
 
 
-object jugadorIzq inherits Jugador{
-	
+object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png"){
+
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.right(1))
 	
 	override method patear(){
@@ -124,7 +146,7 @@ object jugadorIzq inherits Jugador{
 	
 	}
 }
-object jugadorDer inherits Jugador{
+object jugadorDer inherits Jugador(imagenCabeza = "Messi.png"){
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.left(1))
 	
 	override method patear(){

@@ -14,14 +14,14 @@ class Arco{
 	method dibujarALaIzquierda(){
 		inicioX = juego.x0()
 		finX = inicioX+largo
-		puntos =  lineDrawer.line(inicioX,altura,finX,altura,"arco.jpg")
+		puntos =  lineDrawer.dibujarImagenes(inicioX,altura,finX,altura,"arco.jpg")
 		marcador = new Contador(x = juego.w()-1-2, y = juego.h()-1-3, haciaDerecha = true)
 		finX -= 1
 	}
 	method dibujarALaDerecha(){
 		finX = juego.w()-1
 		inicioX = finX-largo
-		puntos =  lineDrawer.line(inicioX,altura,finX,altura,"arco.jpg")
+		puntos =  lineDrawer.dibujarImagenes(inicioX,altura,finX,altura,"arco.jpg")
 		marcador = new Contador(x = juego.x0()+2, y = juego.h()-1-3, haciaDerecha = false)
 		inicioX += 1
 	}
