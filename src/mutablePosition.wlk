@@ -3,6 +3,19 @@ import wollok.game.*
 class MutablePosition {//Posiciones de game pero mutables (codigo copiado)
   var property x = 0
   var property y = 0
+  
+  var property xInicial = 0
+  var property yInicial = 0
+  
+  method posicionInicial(_x,_y){
+	  xInicial = _x
+	  yInicial = _y
+  }
+  
+  method reestablecer(){
+  		x = xInicial
+  		y = yInicial 
+  }
  
   method right(n) = new MutablePosition(x = x + n, y = y)
      

@@ -50,17 +50,22 @@ object partido{
 	var property posJ1 = new Pair(x = 8, y = 0)
 	var property posJ2 = new Pair(x = juego.w()-8, y = 0)
 	var property posPelota = new Pair(x = 15, y = 15)
+	var property alturaArcos = 6
+	var property largoArcos = 3
 	
 	method iniciar(){
-		arco1 = new Arco(altura = 6, largo = 3)
-		arco2 = new Arco(altura = 6, largo = 3)
+		arco1 = new Arco(altura = alturaArcos, largo = largoArcos)
+		arco2 = new Arco(altura = alturaArcos, largo = largoArcos)
 		
 		arco1.dibujarALaIzquierda()
 		arco2.dibujarALaDerecha()
 		
 		temporizador.inicializar()
 		
-		pelota.position().goTo(posPelota.key(), posPelota.value())
+		pelota.position().posicionInicial(posPelota.key(), posPelota.value())
+		jugadorIzq.position().posicionInicial(posJ1.key(), posJ1.value())
+		jugadorDer.position().posicionInicial(posJ2.key(), posJ2.value())
+		
 		elementos.addAll([pelota,jugadorIzq,jugadorDer])
 		
 		game.addVisual(pelota)
@@ -89,9 +94,10 @@ object partido{
 				self.reiniciar()
 		})
 	}
-	method resetearElemento(objeto, posicionInicial){
-		objeto.velocidad().nuevaVelocidad(0,0)
-		objeto.moverse(posicionInicial.key(), posicionInicial.value())
+	method resetearElementos(){
+		elementos.forEach({e => 
+			e.resetear()
+		})
 	}
 	method reiniciar(){
 		self.saqueDelMedio()
@@ -100,9 +106,7 @@ object partido{
 		temporizador.resetear(1)
 	}
 	method saqueDelMedio(){
-		self.resetearElemento(pelota,posPelota)
-		self.resetearElemento(jugadorIzq,posJ1)
-		self.resetearElemento(jugadorDer,posJ2)
+		self.resetearElementos()
 	}
 	method chequearGol(){
 		const posicionPelota = pelota.position()

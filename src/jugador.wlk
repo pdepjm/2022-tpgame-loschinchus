@@ -22,11 +22,16 @@ class Jugador{
 	
 	var property velX = 1 //Velocidad de empuje
 	
-	var property posicionParaEvaluar = new MutablePosition()
+	const posicionParaEvaluar = new MutablePosition()
 
 	
 	method estaEnElPiso() = position.y() == juego.y0()
-
+	
+	method resetear(){
+		velocidad.nuevaVelocidad(0,0)
+		self.moverse(position.xInicial(),position.yInicial())
+	}
+	
 	method moverse(){
 		
 		if(self.estaEnElPiso() && hayRozamiento)

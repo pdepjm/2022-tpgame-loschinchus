@@ -13,7 +13,10 @@ package particulas{
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
 		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
 		
-		
+		method resetear(){
+			position.reestablecer()
+			velocidad.nuevaVelocidad(0,0)
+		}
 		
 		method rebotarX(){ //si la velocidad en x es lo suficientemente grande se puede rebotar
 			if(velocidad.vx().abs() > 1){
@@ -82,7 +85,7 @@ package particulas{
 	}
 	object pelota inherits Particula(image = "soccer_ball_32x32.png"){
 		method patear(fuerzaX,fuerzaY, signo){
-			velocidad.nuevaVelocidad(  (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()) 
+			velocidad.nuevaVelocidad( (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()  ) 
 		}
 	}
 	
