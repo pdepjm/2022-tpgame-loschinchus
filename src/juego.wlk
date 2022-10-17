@@ -46,12 +46,15 @@ object juego { //juego principal
 object partido{
 	const property elementos = []
 	var property arco1
-	var property arco2	
+	var property arco2
+	
 	var property posJ1 = new Pair(x = 8, y = 0)
 	var property posJ2 = new Pair(x = juego.w()-8, y = 0)
 	var property posPelota = new Pair(x = 15, y = 15)
+	
 	var property alturaArcos = 6
 	var property largoArcos = 3
+	var property duracionPartido = 1
 	
 	method iniciar(){
 		arco1 = new Arco(altura = alturaArcos, largo = largoArcos)
@@ -103,7 +106,7 @@ object partido{
 		self.saqueDelMedio()
 		arco1.reiniciarMarcador()
 		arco2.reiniciarMarcador()
-		temporizador.resetear(1)
+		temporizador.resetear(duracionPartido)
 	}
 	method saqueDelMedio(){
 		self.resetearElementos()

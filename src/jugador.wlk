@@ -79,13 +79,13 @@ class Jugador{
 	method devolverPuntos() = lineDrawer.line(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.line(position.x()+1,position.y(),position.x()+1,position.y()+2)
 	method izquierda(){
 		hayRozamiento = false
-		self.empujar(-1)
-		velocidad.agregarVelocidad(-velX,0)
+		self.empujarPelota(-1)
+		velocidad.nuevaVelocidad(-velX,0)
 	}
 	method derecha(){
 		hayRozamiento = false
-		self.empujar(1)
-		velocidad.agregarVelocidad(velX,0)
+		self.empujarPelota(1)
+		velocidad.nuevaVelocidad(velX,0)
 	}
 	method saltar(){
 		if(self.estaEnElPiso())
@@ -94,7 +94,7 @@ class Jugador{
 
 	method estaLaPelota(posicion) = game.getObjectsIn(posicion).contains(pelota)
 	
-	method empujar(signo){
+	method empujarPelota(signo){
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		
 		if(signo < 0)
