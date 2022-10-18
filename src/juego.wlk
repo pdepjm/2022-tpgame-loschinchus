@@ -112,10 +112,8 @@ object partido{
 	}
 	method chequearGol(){
 		const posicionPelota = pelota.position()
-		if(arco1.esGol(posicionPelota) || arco2.esGol(posicionPelota)){
-			game.removeTickEvent("Movimiento")
-			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()})})
-			self.saqueDelMedio()
+		if((arco1.esGol(posicionPelota) || arco2.esGol(posicionPelota))){
+			game.schedule(2000, {self.saqueDelMedio()})
 		}
 	}
 }

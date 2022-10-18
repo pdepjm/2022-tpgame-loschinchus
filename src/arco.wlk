@@ -10,6 +10,7 @@ class Arco{
 	var property finX = null
 	
 	var puntos = []
+	var yaSeContoElGol = false
 	
 	method dibujarALaIzquierda(){
 		inicioX = juego.x0()
@@ -28,8 +29,14 @@ class Arco{
 	
 	method esGol(posicion){
 		const esGol = posicion.x().between(inicioX,finX) && posicion.y().between(0,altura-1)
-		if(esGol)
-			marcador.aumentar()
+		if(esGol){
+			if(!yaSeContoElGol){
+				marcador.aumentar()
+				yaSeContoElGol = true
+			}
+		}
+		else
+			yaSeContoElGol = false
 		return esGol
 	}
 	

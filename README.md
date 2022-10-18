@@ -1,4 +1,4 @@
-# Nombre del juego (<- borrar y completar)
+# Fútbol cabezón
 
 ## Equipo de desarrollo
 
