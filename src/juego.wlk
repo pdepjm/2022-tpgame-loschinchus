@@ -5,6 +5,7 @@ import jugador.*
 import mutablePosition.*
 import arco.*
 import marcador.*
+import powerUp.*
 
 object juego { //juego principal
 	const property w = 30 //ancho
@@ -73,9 +74,13 @@ object partido{
 		jugadorIzq.position().posicionInicial(posJ1.key(), posJ1.value())
 		jugadorDer.position().posicionInicial(posJ2.key(), posJ2.value())
 		
-		elementos.addAll([pelota,jugadorIzq,jugadorDer])
+		const powerUp = new PowerUp()
+		powerUp.position().posicionInicial(14,15)
+		
+		elementos.addAll([pelota,jugadorIzq,jugadorDer, powerUp])
 		
 		game.addVisual(pelota)
+		game.addVisual(powerUp)
 		
 		keyboard.d().onPressDo({jugadorIzq.derecha()})
 		keyboard.a().onPressDo({jugadorIzq.izquierda()})

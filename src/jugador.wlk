@@ -28,7 +28,9 @@ class Jugador{
 	
 	const cabeza = {const img = new Imagen(position = position, image = imagenCabeza) game.addVisual(img) return img}.apply()
 	const pie = {const img = new Imagen(position = position, image = imagenPie) game.addVisual(img) return img}.apply()
-
+	
+	
+	method estaEn(posicion) = puntos.any({p => p.position() == posicion})
 	
 	method cambiarCabeza(imagen){
 		cabeza.cambiarImagen(imagen)
