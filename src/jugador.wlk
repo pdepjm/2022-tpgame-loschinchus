@@ -107,7 +107,7 @@ class Jugador{
 
 	method estaLaPelota(posicion) = game.getObjectsIn(posicion).contains(pelota)
 	
-	method acomodarPelota(signo, posicion){
+	method acomodarPelota(signo, posicion){ //Un jugador
 		if(self.estaLaPelota(posicionParaEvaluar))
 				pelota.moverse(posicion.x()+signo, posicion.y())
 	}
@@ -142,10 +142,8 @@ class Jugador{
 	
 }
 
-
+ 
 object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "botinDer1.png"){
-
-	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar.right(1))
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
@@ -156,13 +154,13 @@ object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "b
 		game.schedule(30,{self.cambiarPie(imagenPie)})
 		
 		self.acomodarPelota(1,posicionParaEvaluar)
-		if(self.estaLaPelotaAlLado())
+		posicionParaEvaluar.goRight(1)
+		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, 1)
 	
 	}
 }
 object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "botinIzq1.png"){
-	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar.left(1))
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
@@ -171,7 +169,8 @@ object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "b
 		self.cambiarPie("botinIzq1Patear.png")
 		game.schedule(30,{self.cambiarPie(imagenPie)})
 		self.acomodarPelota(-1,posicionParaEvaluar)
-		if(self.estaLaPelotaAlLado())
+		posicionParaEvaluar.goLeft(1)
+		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
 	}
 }

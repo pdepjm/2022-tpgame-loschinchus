@@ -4,7 +4,7 @@ import wollok.game.*
 
 package particulas{
 	class Particula{
-		var property image = "circle_32x32.png"
+		var property image = "pelota0.png"
 		var property position = new MutablePosition()
 		var property velocidad= new Velocidad()
 		var property gravedad = juego.g()// valor por defecto de gravedad
@@ -17,6 +17,7 @@ package particulas{
 			position.reestablecer()
 			velocidad.nuevaVelocidad(0,0)
 		}
+		
 		
 		method rebotarX(){ //si la velocidad en x es lo suficientemente grande se puede rebotar
 			if(velocidad.vx().abs() > 1){
@@ -57,8 +58,6 @@ package particulas{
 				
 			if(choque.chocaConPared()) //si choca con alguna pared rebota
 				self.rebotarX()
-				
-			
 			
 			choque = new Choque()//el choque anterior se pierde y se genera uno nuevo
 			choque.irAlProximoChoque(position,velocidad) //si a la velocidad actual chocamos contra algo, ni bien ocura el presunto choque guardamos esa pocision
@@ -86,7 +85,8 @@ package particulas{
 		}
 		
 	}
-	object pelota inherits Particula(image = "soccer_ball_32x32.png"){
+	object pelota inherits Particula(image = "pelota0.png"){
+		
 		method patear(fuerzaX,fuerzaY, signo){
 			velocidad.nuevaVelocidad( (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()  ) 
 		}
@@ -114,6 +114,7 @@ package particulas{
 	method acelerarY(a){
 		vy += a
 	}
+	method modulo() = 4*vx + vy
 
 	
 	override method toString() = vx.toString().concat(" -> ".concat(vy.toString()))

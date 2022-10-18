@@ -56,6 +56,8 @@ object partido{
 	var property largoArcos = 3
 	var property duracionPartido = 1
 	
+	var property noEsGol = true
+	
 	method iniciar(){
 		arco1 = new Arco(altura = alturaArcos, largo = largoArcos)
 		arco2 = new Arco(altura = alturaArcos, largo = largoArcos)
@@ -92,7 +94,8 @@ object partido{
 			e =>
 			e.gravedad(juego.g())
 			e.moverse()
-			self.chequearGol()
+			if(noEsGol)
+				self.chequearGol()
 			if(temporizador.seAcaboElTiempo())
 				self.reiniciar()
 		})
@@ -109,11 +112,13 @@ object partido{
 		temporizador.resetear(duracionPartido)
 	}
 	method saqueDelMedio(){
+		noEsGol = true
 		self.resetearElementos()
 	}
 	method chequearGol(){
 		const posicionPelota = pelota.position()
 		if((arco1.esGol(posicionPelota) || arco2.esGol(posicionPelota))){
+			noEsGol = false
 			game.schedule(2000, {self.saqueDelMedio()})
 		}
 	}
