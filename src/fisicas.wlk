@@ -81,6 +81,9 @@ package particulas{
 		method moverse(x,y){
 			position.goTo(x,y)
 		}
+		method moverse(nuevaPosicion){
+			position = nuevaPosicion
+		}
 		
 	}
 	object pelota inherits Particula(image = "soccer_ball_32x32.png"){
