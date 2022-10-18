@@ -58,6 +58,8 @@ object partido{
 	
 	var property noEsGol = true
 	
+	var contadorPelotaTrabada = 0
+	
 	method iniciar(){
 		arco1 = new Arco(altura = alturaArcos, largo = largoArcos)
 		arco2 = new Arco(altura = alturaArcos, largo = largoArcos)
@@ -87,7 +89,19 @@ object partido{
 		
 		game.onTick(30,"Movimiento",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
+		game.onTick(500, "Chequear pelota trabada", {self.chequearSiSeTraboLaPelota()})
 		self.reiniciar()
+	}
+	method chequearSiSeTraboLaPelota(){
+		if(pelota.velocidad().vy().truncate(0) == 0 && !pelota.estaEnElPiso()){
+			contadorPelotaTrabada++
+		}
+		else
+			contadorPelotaTrabada = 0
+		
+		if(contadorPelotaTrabada >= 3)
+			self.saqueDelMedio()
+		
 	}
 	method moverElementos(){
 		elementos.forEach({
