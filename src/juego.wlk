@@ -56,6 +56,8 @@ object partido{
 	var property largoArcos = 3
 	var property duracionPartido = 1
 	
+	var noHuboGol = true
+	
 	method iniciar(){
 		arco1 = new Arco(altura = alturaArcos, largo = largoArcos)
 		arco2 = new Arco(altura = alturaArcos, largo = largoArcos)
@@ -113,8 +115,7 @@ object partido{
 	}
 	method chequearGol(){
 		const posicionPelota = pelota.position()
-		if(arco1.esGol(posicionPelota) || arco2.esGol(posicionPelota)){
-			game.removeTickEvent("Movimiento")
+		if((arco1.esGol(posicionPelota) || arco2.esGol(posicionPelota)) && noHuboGol){
 			game.schedule(1000, { game.onTick(30,"Movimiento",{self.moverElementos()})})
 			self.saqueDelMedio()
 		}

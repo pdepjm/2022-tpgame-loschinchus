@@ -26,9 +26,7 @@ class Jugador{
 	
 	const posicionParaEvaluar = new MutablePosition()
 	
-	const posicionCabeza = new MutablePosition(x = position.x(), y = position.y()+1)
-	
-	const cabeza = {const img = new Imagen(position = posicionCabeza, image = imagenCabeza) game.addVisual(img) return img}.apply()
+	const cabeza = {const img = new Imagen(position = position, image = imagenCabeza) game.addVisual(img) return img}.apply()
 	const pie = {const img = new Imagen(position = position, image = imagenPie) game.addVisual(img) return img}.apply()
 
 	
@@ -37,11 +35,6 @@ class Jugador{
 	}
 	method cambiarPie(imagen){
 		pie.cambiarImagen(imagen)
-	}
-
-	method moverVisuales(){
-		cabeza.moverse(velocidad)
-		//pie.moverse(velocidad)
 	}
 	
 	
@@ -65,7 +58,6 @@ class Jugador{
 		position.goUp(velocidad.vy())
 		
 		self.moverPuntos()
-		self.moverVisuales()
 		
 		hayRozamiento = true
 		
@@ -77,7 +69,6 @@ class Jugador{
 		}
 		)
 		position.goTo(x,y)
-		posicionCabeza.goTo(x,y+1)
 		puntos = self.devolverPuntos()
 	}
 	method limitarVelocidad(){
@@ -133,7 +124,7 @@ class Jugador{
 }
 
 
-object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "botinDerecho.png"){
+object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "botinDer1.png"){
 
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.right(1))
 	
@@ -141,7 +132,7 @@ object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "boti
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		posicionParaEvaluar.goRight(1)
 		
-		self.cambiarPie("botinDerechoPatea.png")
+		self.cambiarPie("botinDer1Patear.png")
 		game.schedule(30,{self.cambiarPie(imagenPie)})
 		
 		if(self.estaLaPelotaAlLado())
@@ -149,12 +140,12 @@ object jugadorIzq inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "boti
 	
 	}
 }
-object jugadorDer inherits Jugador(imagenCabeza = "Messi.png", imagenPie = "botinIzquierdo.png"){
+object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "botinIzq1.png"){
 	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar) || self.estaLaPelota(posicionParaEvaluar.left(1))
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
-		self.cambiarPie("botinIzquierdoPatea.png")
+		self.cambiarPie("botinIzq1Patear.png")
 		game.schedule(30,{self.cambiarPie(imagenPie)})
 		if(self.estaLaPelotaAlLado())
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
