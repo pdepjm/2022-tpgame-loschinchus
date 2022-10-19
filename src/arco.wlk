@@ -1,6 +1,7 @@
 import fisicas.graficos.*
 import juego.*
 import marcador.*
+import wollok.game.*
 class Arco{
 	var property altura
 	var property largo
@@ -13,17 +14,19 @@ class Arco{
 	var yaSeContoElGol = false
 	
 	method dibujarALaIzquierda(){
-		inicioX = juego.x0()
-		finX = inicioX+largo
-		puntos =  lineDrawer.dibujarImagenes(inicioX,altura,finX,altura,"arco.jpg")
+		self.dibujar(juego.x0(),juego.x0()+largo)
 		marcador = new Contador(x = juego.w()-1-2, y = juego.h()-1-3, haciaDerecha = true)
-		finX -= 1
+		
 	}
 	method dibujarALaDerecha(){
-		finX = juego.w()-1
-		inicioX = finX-largo
-		puntos =  lineDrawer.dibujarImagenes(inicioX,altura,finX,altura,"arco.jpg")
+		self.dibujar(juego.w()-1-largo, juego.w()-1)
 		marcador = new Contador(x = juego.x0()+2, y = juego.h()-1-3, haciaDerecha = false)
+		
+	}
+	method dibujar(inicio,fin){
+		inicioX = inicio
+		finX = fin
+		puntos =  lineDrawer.dibujarImagenes(inicioX,altura,finX,altura,"arco.jpg")
 		inicioX += 1
 	}
 	
@@ -42,6 +45,19 @@ class Arco{
 	
 	method reiniciarMarcador(){
 		marcador.reiniciar()
+	}
+	
+	method reDibujarIzquierda(nuevoAlto, nuevoLargo){
+		puntos.forEach({p => game.removeVisual(p)})
+		altura = nuevoAlto
+		largo = nuevoLargo
+		self.dibujar(juego.x0(), juego.x0()+largo)
+	}
+	method reDibujarDerecha(nuevoAlto, nuevoLargo){
+		puntos.forEach({p => game.removeVisual(p)})
+		altura = nuevoAlto
+		largo = nuevoLargo
+		self.dibujar(juego.w()-1-largo, juego.w()-1)
 	}
 	
 }

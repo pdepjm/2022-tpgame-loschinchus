@@ -13,6 +13,9 @@ package particulas{
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
 		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
 		
+		var property rozamientoNormal = 0.8
+		var property reboteNormal = 0.6
+		
 		method resetear(){
 			position.reestablecer()
 			velocidad.nuevaVelocidad(0,0)

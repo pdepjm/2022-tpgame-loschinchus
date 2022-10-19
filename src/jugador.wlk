@@ -28,6 +28,7 @@ class Jugador{
 	
 	var property fuerzaX = 2 //fuerza con que patea
 	var property fuerzaY = 3
+	var property salto = 1.5
 	
 	var property arco = new Arco(altura = altoArco, largo = largoArco)
 	
@@ -113,7 +114,7 @@ class Jugador{
 	}
 	method saltar(){
 		if(self.estaEnElPiso())
-			velocidad.agregarVelocidad(0,1.5)
+			velocidad.agregarVelocidad(0,salto)
 	}
 
 	method estaLaPelota(posicion) = game.getObjectsIn(posicion).contains(pelota)
@@ -155,13 +156,21 @@ class Jugador{
 		game.addVisual(pie)
 	}
 	
+	method cambiarArco(altura,largo)
 	method patear()
 	method dibujarArco()
+	method rival()
 	
 }
 
  
 object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "botinDer1.png"){
+	
+	override method rival() = jugadorDer
+	
+	override method cambiarArco(altura,largo){
+		arco.reDibujarIzquierda(altura,largo)
+	}
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
@@ -190,6 +199,12 @@ object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "b
 	}
 }
 object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "botinIzq1.png"){
+	
+	override method rival() = jugadorIzq
+	
+	override method cambiarArco(altura,largo){
+		arco.reDibujarDerecha(altura,largo)
+	}
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())

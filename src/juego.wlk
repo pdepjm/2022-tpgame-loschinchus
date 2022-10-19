@@ -10,7 +10,6 @@ import powerUp.*
 object juego { //juego principal
 	const property w = 30 //ancho
 	const property h = 20 //alto
-	const property proporcionArco = 1/6
 	const property y0 = 0 //suelo
 	const property x0 = 0 //pared izq
 	const property cellSize = 32
@@ -50,12 +49,16 @@ object partido{
 	var property posJIzq = new Pair(x = 8, y = 0)
 	var property posJDer = new Pair(x = juego.w()-8, y = 0)
 	var property posPelota = new Pair(x = 15, y = 15)
+	var property powerUps = [superPique, arcoMasGrande, pisoResbaloso, superFuerza, superSalto, gravedadCero]
+	const cantidadPowerUps = powerUps.size()
 	
 	var property alturaArcos = 6
 	var property largoArcos = 3
 	var property duracionPartido = 1
 	
 	var property noEsGol = true
+	
+	var property gravedad = juego.g()
 	
 	var contadorPelotaTrabada = 0
 	
@@ -66,14 +69,22 @@ object partido{
 		jugadores.posicionesIniciales(posJIzq,posJDer)
 		pelota.position().posicionInicial(posPelota.key(), posPelota.value())
 		
-		elementos.addAll([pelota,jugadores])
+		self.agregarElemento(pelota)
+		self.agregarElemento(jugadores)
 		
 		game.addVisual(pelota)
 		
 		game.onTick(30,"Movimiento",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
+		game.schedule(10000.randomUpTo(40000) ,{self.agregarPowerUp()} )
 		game.onTick(500, "Chequear pelota trabada", {self.chequearSiSeTraboLaPelota()})
 		self.reiniciar()
+	}
+	method agregarPowerUp(){
+		const powerUp = powerUps.get(0.randomUpTo(cantidadPowerUps-1))
+		self.agregarElemento(powerUp)
+		game.addVisual(powerUp)
+		game.schedule(10000.randomUpTo(40000) ,{self.agregarPowerUp()} )
 	}
 	method chequearSiSeTraboLaPelota(){
 		if(pelota.velocidad().vy().truncate(0) == 0 && !pelota.estaEnElPiso()){
@@ -89,7 +100,7 @@ object partido{
 	method moverElementos(){
 		elementos.forEach({
 			e =>
-			e.gravedad(juego.g())
+			e.gravedad(gravedad)
 			e.moverse()
 			if(noEsGol)
 				self.chequearGol()
@@ -126,6 +137,12 @@ object partido{
 	}
 }
 object jugadores{
+	
+	var property velEmpujeNormal = 1
+	var property fuerzaXNormal = 2
+	var property fuerzaYNormal = 3
+	var property saltoNormal = 1.5
+	
 	method esGol(posicion) = jugadorIzq.arco().esGol(posicion) || jugadorDer.arco().esGol(posicion)
 	method reiniciarMarcador(){
 		jugadorIzq.arco().reiniciarMarcador()
@@ -152,4 +169,19 @@ object jugadores{
 		jugadorIzq.position().posicionInicial(p1.key(),p2.value())
 		jugadorDer.position().posicionInicial(p2.key(),p2.value())
 	}
+	method activarPowerUp(posicion, powerUp){
+		if(jugadorIzq.estaEn(posicion))
+			powerUp.activar(jugadorIzq)
+		else if(jugadorDer.estaEn(posicion))
+			powerUp.activar(jugadorDer)
+	}
+	method cambiarVelEmpuje(vel){
+		jugadorIzq.velX(vel)
+		jugadorDer.velX(vel)
+	}
+	method cambiarRozamiento(roz){
+		jugadorIzq.rozamiento(roz)
+		jugadorDer.rozamiento(roz)
+	}
+	
 }
