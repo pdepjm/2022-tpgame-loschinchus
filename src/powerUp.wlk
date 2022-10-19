@@ -5,13 +5,9 @@ import wollok.game.*
 
 class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	
-	var property efecto = {aux1 = pelota.rebote() pelota.rebote(0.9)}
-	var property deshacerEfecto = {pelota.rebote(aux1)}
+	var property efecto
+	var property deshacerEfecto
 	var property duracion = 10000
-	
-	var aux1 = null
-	var aux2 = null
-	var aux3 = null
 	
 	method aQuienEstaTocando(){
 		const colliders = game.getObjectsIn(position)
@@ -28,6 +24,7 @@ class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	override method resetear(){
 		position.goTo(0.randomUpTo(juego.w()-1), 3.randomUpTo(juego.h()-1-6))
 		velocidad.nuevaVelocidad(1.randomUpTo(4), 1.randomUpTo(4))
+		deshacerEfecto.apply()
 	}
 	override method moverse(){
 		gravedad = -0.3
@@ -41,7 +38,7 @@ class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	}
 	
 	method activarPowerUp(jugador){
-		partido.elementos().remove(self)
+		partido.quitarElemento(self)
 		game.removeVisual(self)
 		self.aplicarEfecto()
 	}
@@ -50,6 +47,5 @@ class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 		efecto.apply()
 		game.schedule(duracion,{deshacerEfecto.apply()})
 	}
-	
 	
 }

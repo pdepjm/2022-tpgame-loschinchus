@@ -1,12 +1,16 @@
 import fisicas.particulas.*
 import fisicas.graficos.*
 import juego.*
+import arco.*
 import wollok.game.*
 import mutablePosition.*
 
 
 
 class Jugador{
+	
+	
+	
 	var property pateaHaciaDerecha = true
 	var property position = new MutablePosition(x = 8, y = 0)
 	var property velocidad = new Velocidad()
@@ -17,17 +21,22 @@ class Jugador{
 	var property imagenCabeza
 	var property imagenPie
 	
+	var property altoArco = 6
+	var property largoArco = 3
+	
 	var property hayRozamiento = true
 	
 	var property fuerzaX = 2 //fuerza con que patea
 	var property fuerzaY = 3
 	
+	var property arco = new Arco(altura = altoArco, largo = largoArco)
+	
 	var property velX = 1 //Velocidad de empuje
 	
 	const posicionParaEvaluar = new MutablePosition()
 	
-	const cabeza = {const img = new Imagen(position = position, image = imagenCabeza) game.addVisual(img) return img}.apply()
-	const pie = {const img = new Imagen(position = position, image = imagenPie) game.addVisual(img) return img}.apply()
+	const cabeza = new Imagen(position = position, image = imagenCabeza)
+	const pie = new Imagen(position = position, image = imagenPie)
 	
 	
 	method estaEn(posicion) = puntos.any({p => p.position() == posicion})
@@ -140,7 +149,14 @@ class Jugador{
 		if(self.estaLaPelota(posicion))
 			pelota.velocidad().agregarVelocidad(signo*fuerzaX + velocidad.vx(), 0)
 	}
+	
+	method inicializar(){
+		game.addVisual(cabeza)
+		game.addVisual(pie)
+	}
+	
 	method patear()
+	method dibujarArco()
 	
 }
 
@@ -161,6 +177,17 @@ object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "b
 			pelota.patear(2*fuerzaX, fuerzaY, 1)
 	
 	}
+	override method dibujarArco(){
+		arco.dibujarALaIzquierda()
+	}
+	override method inicializar(){
+		super()
+		keyboard.d().onPressDo({self.derecha()})
+		keyboard.a().onPressDo({self.izquierda()})
+		keyboard.w().onPressDo({self.saltar()})
+		keyboard.space().onPressDo({self.patear()})
+		self.dibujarArco()
+	}
 }
 object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "botinIzq1.png"){
 	
@@ -174,5 +201,16 @@ object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "b
 		posicionParaEvaluar.goLeft(1)
 		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
+	}
+	override method dibujarArco(){
+		arco.dibujarALaDerecha()
+	}
+	override method inicializar(){
+		super()
+		keyboard.right().onPressDo({self.derecha()})
+		keyboard.left().onPressDo({self.izquierda()})
+		keyboard.up().onPressDo({self.saltar()})
+		keyboard.enter().onPressDo({self.patear()})
+		self.dibujarArco()
 	}
 }

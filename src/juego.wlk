@@ -46,11 +46,9 @@ object juego { //juego principal
 
 object partido{
 	const property elementos = []
-	var property arco1
-	var property arco2
 	
-	var property posJ1 = new Pair(x = 8, y = 0)
-	var property posJ2 = new Pair(x = juego.w()-8, y = 0)
+	var property posJIzq = new Pair(x = 8, y = 0)
+	var property posJDer = new Pair(x = juego.w()-8, y = 0)
 	var property posPelota = new Pair(x = 15, y = 15)
 	
 	var property alturaArcos = 6
@@ -62,35 +60,15 @@ object partido{
 	var contadorPelotaTrabada = 0
 	
 	method iniciar(){
-		arco1 = new Arco(altura = alturaArcos, largo = largoArcos)
-		arco2 = new Arco(altura = alturaArcos, largo = largoArcos)
-		
-		arco1.dibujarALaIzquierda()
-		arco2.dibujarALaDerecha()
 		
 		temporizador.inicializar()
-		
+		jugadores.inicializar()
+		jugadores.posicionesIniciales(posJIzq,posJDer)
 		pelota.position().posicionInicial(posPelota.key(), posPelota.value())
-		jugadorIzq.position().posicionInicial(posJ1.key(), posJ1.value())
-		jugadorDer.position().posicionInicial(posJ2.key(), posJ2.value())
 		
-		const powerUp = new PowerUp()
-		powerUp.position().posicionInicial(14,15)
-		
-		elementos.addAll([pelota,jugadorIzq,jugadorDer, powerUp])
+		elementos.addAll([pelota,jugadores])
 		
 		game.addVisual(pelota)
-		game.addVisual(powerUp)
-		
-		keyboard.d().onPressDo({jugadorIzq.derecha()})
-		keyboard.a().onPressDo({jugadorIzq.izquierda()})
-		keyboard.w().onPressDo({jugadorIzq.saltar()})
-		keyboard.space().onPressDo({jugadorIzq.patear()})
-		
-		keyboard.right().onPressDo({jugadorDer.derecha()})
-		keyboard.left().onPressDo({jugadorDer.izquierda()})
-		keyboard.up().onPressDo({jugadorDer.saltar()})
-		keyboard.enter().onPressDo({jugadorDer.patear()})
 		
 		game.onTick(30,"Movimiento",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
@@ -119,6 +97,12 @@ object partido{
 				self.reiniciar()
 		})
 	}
+	method agregarElemento(e){
+		elementos.add(e)
+	}
+	method quitarElemento(e){
+		elementos.remove(e)
+	}
 	method resetearElementos(){
 		elementos.forEach({e => 
 			e.resetear()
@@ -126,8 +110,7 @@ object partido{
 	}
 	method reiniciar(){
 		self.saqueDelMedio()
-		arco1.reiniciarMarcador()
-		arco2.reiniciarMarcador()
+		jugadores.reiniciarMarcador()
 		temporizador.resetear(duracionPartido)
 	}
 	method saqueDelMedio(){
@@ -136,9 +119,37 @@ object partido{
 	}
 	method chequearGol(){
 		const posicionPelota = pelota.position()
-		if((arco1.esGol(posicionPelota) || arco2.esGol(posicionPelota))){
+		if(jugadores.esGol(posicionPelota)){
 			noEsGol = false
 			game.schedule(2000, {self.saqueDelMedio()})
 		}
+	}
+}
+object jugadores{
+	method esGol(posicion) = jugadorIzq.arco().esGol(posicion) || jugadorDer.arco().esGol(posicion)
+	method reiniciarMarcador(){
+		jugadorIzq.arco().reiniciarMarcador()
+		jugadorDer.arco().reiniciarMarcador()
+	}
+	method moverse() {
+		jugadorIzq.moverse()
+		jugadorDer.moverse()
+		
+	}
+	method inicializar(){
+		jugadorIzq.inicializar()
+		jugadorDer.inicializar()
+	} 
+	method resetear(){
+		jugadorIzq.resetear()
+		jugadorDer.resetear()
+	}
+	method gravedad(g){
+		jugadorIzq.gravedad(g)
+		jugadorDer.gravedad(g)
+	}
+	method posicionesIniciales(p1,p2){
+		jugadorIzq.position().posicionInicial(p1.key(),p2.value())
+		jugadorDer.position().posicionInicial(p2.key(),p2.value())
 	}
 }
