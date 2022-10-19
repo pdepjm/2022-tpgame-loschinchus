@@ -37,8 +37,7 @@ class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 			self.activarPowerUp(jugadorIzq)
 		else 
 			if(jugadorDer.estaEn(position))
-				self.activarPowerUp(jugadorDer)
-		
+				self.activarPowerUp(jugadorDer)	
 	}
 	
 	method activarPowerUp(jugador){

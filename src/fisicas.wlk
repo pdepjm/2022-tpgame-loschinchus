@@ -151,7 +151,8 @@ class Choque{ //Este es el objeto jugoso
 	
 	method hayAlguienEn(x,y, n){ //Busca n particulas en la posicion (x,y)
 		posicionBuscarParticulas.goTo(x,y)
-		return game.getObjectsIn(posicionBuscarParticulas).size() > n
+		const objetosEnPosicion = game.getObjectsIn(posicionBuscarParticulas)
+		return objetosEnPosicion.size() > n && !(objetosEnPosicion.any({o => o.toString() == "numero"})) //para no chocar con los marcadores
 	}
 	
 	method analizarEstadoActual(posicion, velocidad){ //Ocurre al principio del movimiento de la pelota

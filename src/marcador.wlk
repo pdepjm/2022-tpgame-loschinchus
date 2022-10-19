@@ -21,6 +21,7 @@ class Numero{
 		else
 			n--
 	}
+	override method toString() = "numero"
 }
 
 class Contador{
