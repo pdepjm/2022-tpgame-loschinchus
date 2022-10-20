@@ -6,10 +6,15 @@ import mutablePosition.*
 import arco.*
 import marcador.*
 import powerUp.*
+import menu.*
 
 object juego { //juego principal
 	const property w = 30 //ancho
 	const property h = 20 //alto
+	
+	const property medioX = w.div(2)
+	const property medioY = h.div(2)
+	
 	const property y0 = 0 //suelo
 	const property x0 = 0 //pared izq
 	const property cellSize = 32
@@ -19,8 +24,10 @@ object juego { //juego principal
 	
 	method iniciar(){
 		self.inicializar()
-		partido.iniciar()
 		game.start()
+		//partido.iniciar()
+		
+		menu.iniciar()
 	}
 	
 	method inicializar() {
@@ -31,6 +38,7 @@ object juego { //juego principal
 		game.ground("grid.png")
 		game.title("Juego")
 		game.boardGround("background.png")
+		menu.inicializar()
 		
 	}
 	
@@ -44,14 +52,12 @@ object juego { //juego principal
 }
 
 object partido{
-	const property elementos = []
+	const property elementos = #{}
 	
 	var property posJIzq = new Pair(x = 8, y = 0)
 	var property posJDer = new Pair(x = juego.w()-8, y = 0)
 	var property posPelota = new Pair(x = 15, y = 15)
 	var property powerUps = [superPique, arcoMasGrande, pisoResbaloso, superFuerza, superSalto, gravedadCero]
-	const cantidadPowerUps = powerUps.size()
-	
 	var property alturaArcos = 6
 	var property largoArcos = 3
 	var property duracionPartido = 1
@@ -63,7 +69,7 @@ object partido{
 	var contadorPelotaTrabada = 0
 	
 	method iniciar(){
-		
+		game.clear()
 		temporizador.inicializar()
 		jugadores.inicializar()
 		jugadores.posicionesIniciales(posJIzq,posJDer)
@@ -71,20 +77,24 @@ object partido{
 		
 		self.agregarElemento(pelota)
 		self.agregarElemento(jugadores)
-		
 		game.addVisual(pelota)
 		
 		game.onTick(30,"Movimiento",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
-		game.schedule(10000.randomUpTo(40000) ,{self.agregarPowerUp()} )
+		game.onTick(10000.randomUpTo(40000),"PowerUp",{self.agregarPowerUp()} )
 		game.onTick(500, "Chequear pelota trabada", {self.chequearSiSeTraboLaPelota()})
 		self.reiniciar()
 	}
 	method agregarPowerUp(){
-		const powerUp = powerUps.get(0.randomUpTo(cantidadPowerUps-1))
+		const powerUp = powerUps.get(0.randomUpTo(powerUps.size()-1))
+		powerUp.resetear()
+		if(!elementos.contains(powerUp))
+			game.addVisual(powerUp)
 		self.agregarElemento(powerUp)
-		game.addVisual(powerUp)
-		game.schedule(10000.randomUpTo(40000) ,{self.agregarPowerUp()} )
+		
+		game.schedule(20000 ,{powerUp.quitarSiNoEsta()} )
+		game.removeTickEvent("PowerUp")
+		game.onTick(10000.randomUpTo(40000),"PowerUp",{self.agregarPowerUp()} )
 	}
 	method chequearSiSeTraboLaPelota(){
 		if(pelota.velocidad().vy().truncate(0) == 0 && !pelota.estaEnElPiso()){
@@ -105,7 +115,7 @@ object partido{
 			if(noEsGol)
 				self.chequearGol()
 			if(temporizador.seAcaboElTiempo())
-				self.reiniciar()
+				game.schedule(1000,{self.terminar()})
 		})
 	}
 	method agregarElemento(e){
@@ -135,53 +145,13 @@ object partido{
 			game.schedule(2000, {self.saqueDelMedio()})
 		}
 	}
-}
-object jugadores{
-	
-	var property velEmpujeNormal = 1
-	var property fuerzaXNormal = 2
-	var property fuerzaYNormal = 3
-	var property saltoNormal = 1.5
-	
-	method esGol(posicion) = jugadorIzq.arco().esGol(posicion) || jugadorDer.arco().esGol(posicion)
-	method reiniciarMarcador(){
-		jugadorIzq.arco().reiniciarMarcador()
-		jugadorDer.arco().reiniciarMarcador()
-	}
-	method moverse() {
-		jugadorIzq.moverse()
-		jugadorDer.moverse()
+	method terminar(){
+		game.removeTickEvent("Movimiento")
+		game.removeTickEvent("Temporizador")
+		game.removeTickEvent("PowerUp")
+		game.removeTickEvent("Chequear pelota trabada")
 		
+		menu.iniciar()
 	}
-	method inicializar(){
-		jugadorIzq.inicializar()
-		jugadorDer.inicializar()
-	} 
-	method resetear(){
-		jugadorIzq.resetear()
-		jugadorDer.resetear()
-	}
-	method gravedad(g){
-		jugadorIzq.gravedad(g)
-		jugadorDer.gravedad(g)
-	}
-	method posicionesIniciales(p1,p2){
-		jugadorIzq.position().posicionInicial(p1.key(),p2.value())
-		jugadorDer.position().posicionInicial(p2.key(),p2.value())
-	}
-	method activarPowerUp(posicion, powerUp){
-		if(jugadorIzq.estaEn(posicion))
-			powerUp.activar(jugadorIzq)
-		else if(jugadorDer.estaEn(posicion))
-			powerUp.activar(jugadorDer)
-	}
-	method cambiarVelEmpuje(vel){
-		jugadorIzq.velX(vel)
-		jugadorDer.velX(vel)
-	}
-	method cambiarRozamiento(roz){
-		jugadorIzq.rozamiento(roz)
-		jugadorDer.rozamiento(roz)
-	}
-	
 }
+

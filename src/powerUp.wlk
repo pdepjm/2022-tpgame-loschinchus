@@ -5,24 +5,49 @@ import wollok.game.*
 
 class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	
+	
 	var property duracion = 10000
 	
 	override method resetear(){
 		position.goTo(0.randomUpTo(juego.w()-1), 3.randomUpTo(juego.h()-1-6))
-		velocidad.nuevaVelocidad(1.randomUpTo(4), 1.randomUpTo(4))
+		velocidad.nuevaVelocidad((-2).randomUpTo(2), (-2).randomUpTo(2))
 	}
 	override method moverse(){
 		gravedad = -0.3
-		super()
-		
 		jugadores.activarPowerUp(position,self)
+		
+		
+		var x = juego.limitarX(position.x()+velocidad.vx())
+		var y = juego.limitarY(position.y()+velocidad.vy())
+		
+		
+		
+		if(x == juego.w()-1 || x == juego.x0())
+			self.rebotarX()
+		
+		if(self.estaEnElPiso() || (y == juego.h()-1 && velocidad.vy().abs() >= 1))
+			self.rebotarY()
+		
+		self.moverse(x.truncate(0),y.truncate(0))
+		
+	}
+	
+	method quitar(){
+		partido.quitarElemento(self)
+		game.removeVisual(self)
+	}
+	method quitarSiNoEsta(){
+		if(game.hasVisual(self))
+			self.quitar()
 	}
 	
 	method activar(jugador){
-		partido.quitarElemento(self)
-		game.removeVisual(self)
+		self.quitar()
 		self.efecto(jugador)
-		game.schedule(duracion,{self.deshacerEfecto(jugador)})
+		game.schedule(duracion,{self.desactivar(jugador)})
+	}
+	method desactivar(jugador){
+		self.deshacerEfecto(jugador)
 	}
 	method efecto(jugador)
 	method deshacerEfecto(jugador)

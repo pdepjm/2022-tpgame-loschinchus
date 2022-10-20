@@ -8,7 +8,7 @@ package particulas{
 		var property position = new MutablePosition()
 		var property velocidad= new Velocidad()
 		var property gravedad = juego.g()// valor por defecto de gravedad
-		var property choque = new Choque() //objeto choque
+		
 		
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
 		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
@@ -21,7 +21,6 @@ package particulas{
 			velocidad.nuevaVelocidad(0,0)
 		}
 		
-		
 		method rebotarX(){ //si la velocidad en x es lo suficientemente grande se puede rebotar
 			if(velocidad.vx().abs() > 1){
 				velocidad.factorVx(-rebote)
@@ -33,7 +32,22 @@ package particulas{
 			}
 		}
 		method estaEnElPiso() = position.y() == juego.y0()
-		method moverse(){
+		
+		method moverse(x,y){
+			position.goTo(x,y)
+		}
+		method moverse(nuevaPosicion){
+			position = nuevaPosicion
+		}
+		
+		method moverse()
+		
+	}
+	object pelota inherits Particula(image = "pelota0.png"){
+		
+		var property choque = new Choque() //objeto choque
+		
+		override method moverse(){
 			
 			choque.analizarEstadoActual(position, velocidad) //analiza la posicion actual y se fija que tipos de choque se esta produciendo
 			
@@ -48,10 +62,10 @@ package particulas{
 				self.rebotarY() //rebota verticalmente
 				if(velocidad.vy() < 0 && velocidad.vy() > -1){ 	//si la velocidad vertical es pequeña y esta en una particula significa que
 					gravedad = 0								//se apoya sobre ella y por lo tanto la gravedad no actua
-					velocidad.factorVx(rozamiento)				// y ademas actua el rozamiento	y no se permite roce horizontal			
-					}											// para no toskearse con las particulas
+					velocidad.factorVx(rozamiento)				// y ademas actua el rozamiento	y no se permite colision horizontal			
+					}											// para no trabarse con las particulas
 				else	
-					self.rebotarX()								//sino se puede rebota sin problemas	
+					self.rebotarX()								//sino se puede rebotar sin problemas	
 			}
 			
 			
@@ -80,15 +94,6 @@ package particulas{
 			position.goTo(x,y)
 			
 		}
-		method moverse(x,y){
-			position.goTo(x,y)
-		}
-		method moverse(nuevaPosicion){
-			position = nuevaPosicion
-		}
-		
-	}
-	object pelota inherits Particula(image = "pelota0.png"){
 		
 		method patear(fuerzaX,fuerzaY, signo){
 			velocidad.nuevaVelocidad( (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()  ) 

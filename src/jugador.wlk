@@ -5,7 +5,13 @@ import arco.*
 import wollok.game.*
 import mutablePosition.*
 
-
+class Pie inherits Imagen{
+	method patear(){
+		const imagen = image
+		image = imagen.replace(".png", "Patear.png")
+		game.schedule(30,{self.cambiarImagen(imagen)})
+	}
+}
 
 class Jugador{
 	
@@ -37,7 +43,7 @@ class Jugador{
 	const posicionParaEvaluar = new MutablePosition()
 	
 	const cabeza = new Imagen(position = position, image = imagenCabeza)
-	const pie = new Imagen(position = position, image = imagenPie)
+	const pie = new Pie(position = position, image = imagenPie)
 	
 	
 	method estaEn(posicion) = puntos.any({p => p.position() == posicion})
@@ -77,7 +83,8 @@ class Jugador{
 	method moverse(x,y){
 		puntos.forEach( {
 			p =>
-			game.removeVisual(p)
+			if(game.hasVisual(p))
+				game.removeVisual(p)
 		}
 		)
 		position.goTo(x,y)
@@ -177,8 +184,8 @@ object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "b
 		posicionParaEvaluar.goRight(1)
 		
 		
-		self.cambiarPie("botinDer1Patear.png")
-		game.schedule(30,{self.cambiarPie(imagenPie)})
+		pie.patear()
+		
 		
 		self.acomodarPelota(1,posicionParaEvaluar)
 		posicionParaEvaluar.goRight(1)
@@ -210,8 +217,7 @@ object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "b
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		
 		
-		self.cambiarPie("botinIzq1Patear.png")
-		game.schedule(30,{self.cambiarPie(imagenPie)})
+		pie.patear()
 		self.acomodarPelota(-1,posicionParaEvaluar)
 		posicionParaEvaluar.goLeft(1)
 		if(self.estaLaPelota(posicionParaEvaluar))
@@ -228,4 +234,53 @@ object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "b
 		keyboard.enter().onPressDo({self.patear()})
 		self.dibujarArco()
 	}
+}
+object jugadores{
+	
+	var property velEmpujeNormal = 1
+	var property fuerzaXNormal = 2
+	var property fuerzaYNormal = 3
+	var property saltoNormal = 1.5
+	
+	method esGol(posicion) = jugadorIzq.arco().esGol(posicion) || jugadorDer.arco().esGol(posicion)
+	method reiniciarMarcador(){
+		jugadorIzq.arco().reiniciarMarcador()
+		jugadorDer.arco().reiniciarMarcador()
+	}
+	method moverse() {
+		jugadorIzq.moverse()
+		jugadorDer.moverse()
+		
+	}
+	method inicializar(){
+		jugadorIzq.inicializar()
+		jugadorDer.inicializar()
+	} 
+	method resetear(){
+		jugadorIzq.resetear()
+		jugadorDer.resetear()
+	}
+	method gravedad(g){
+		jugadorIzq.gravedad(g)
+		jugadorDer.gravedad(g)
+	}
+	method posicionesIniciales(p1,p2){
+		jugadorIzq.position().posicionInicial(p1.key(),p2.value())
+		jugadorDer.position().posicionInicial(p2.key(),p2.value())
+	}
+	method activarPowerUp(posicion, powerUp){
+		if(jugadorIzq.estaEn(posicion))
+			powerUp.activar(jugadorIzq)
+		else if(jugadorDer.estaEn(posicion))
+			powerUp.activar(jugadorDer)
+	}
+	method cambiarVelEmpuje(vel){
+		jugadorIzq.velX(vel)
+		jugadorDer.velX(vel)
+	}
+	method cambiarRozamiento(roz){
+		jugadorIzq.rozamiento(roz)
+		jugadorDer.rozamiento(roz)
+	}
+	
 }
