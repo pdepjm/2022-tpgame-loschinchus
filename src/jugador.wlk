@@ -1,12 +1,22 @@
 import fisicas.particulas.*
 import fisicas.graficos.*
 import juego.*
+import arco.*
 import wollok.game.*
 import mutablePosition.*
 
-
+class Pie inherits Imagen{
+	method patear(){
+		const imagen = image
+		image = imagen.replace(".png", "Patear.png")
+		game.schedule(30,{self.cambiarImagen(imagen)})
+	}
+}
 
 class Jugador{
+	
+	
+	
 	var property pateaHaciaDerecha = true
 	var property position = new MutablePosition(x = 8, y = 0)
 	var property velocidad = new Velocidad()
@@ -17,18 +27,26 @@ class Jugador{
 	var property imagenCabeza
 	var property imagenPie
 	
+	var property altoArco = 6
+	var property largoArco = 3
+	
 	var property hayRozamiento = true
 	
 	var property fuerzaX = 2 //fuerza con que patea
 	var property fuerzaY = 3
+	var property salto = 1.5
+	
+	var property arco = new Arco(altura = altoArco, largo = largoArco)
 	
 	var property velX = 1 //Velocidad de empuje
 	
 	const posicionParaEvaluar = new MutablePosition()
 	
-	const cabeza = {const img = new Imagen(position = position, image = imagenCabeza) game.addVisual(img) return img}.apply()
-	const pie = {const img = new Imagen(position = position, image = imagenPie) game.addVisual(img) return img}.apply()
-
+	const cabeza = new Imagen(position = position, image = imagenCabeza)
+	const pie = new Pie(position = position, image = imagenPie)
+	
+	
+	method estaEn(posicion) = puntos.any({p => p.position() == posicion})
 	
 	method cambiarCabeza(imagen){
 		cabeza.cambiarImagen(imagen)
@@ -65,7 +83,8 @@ class Jugador{
 	method moverse(x,y){
 		puntos.forEach( {
 			p =>
-			game.removeVisual(p)
+			if(game.hasVisual(p))
+				game.removeVisual(p)
 		}
 		)
 		position.goTo(x,y)
@@ -102,12 +121,12 @@ class Jugador{
 	}
 	method saltar(){
 		if(self.estaEnElPiso())
-			velocidad.agregarVelocidad(0,1.5)
+			velocidad.agregarVelocidad(0,salto)
 	}
 
 	method estaLaPelota(posicion) = game.getObjectsIn(posicion).contains(pelota)
 	
-	method acomodarPelota(signo, posicion){
+	method acomodarPelota(signo, posicion){ //Un jugador
 		if(self.estaLaPelota(posicionParaEvaluar))
 				pelota.moverse(posicion.x()+signo, posicion.y())
 	}
@@ -138,40 +157,130 @@ class Jugador{
 		if(self.estaLaPelota(posicion))
 			pelota.velocidad().agregarVelocidad(signo*fuerzaX + velocidad.vx(), 0)
 	}
+	
+	method inicializar(){
+		game.addVisual(cabeza)
+		game.addVisual(pie)
+	}
+	
+	method cambiarArco(altura,largo)
 	method patear()
+	method dibujarArco()
+	method rival()
 	
 }
 
-
+ 
 object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "botinDer1.png"){
-
-	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar.right(1))
+	
+	override method rival() = jugadorDer
+	
+	override method cambiarArco(altura,largo){
+		arco.reDibujarIzquierda(altura,largo)
+	}
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		posicionParaEvaluar.goRight(1)
 		
 		
-		self.cambiarPie("botinDer1Patear.png")
-		game.schedule(30,{self.cambiarPie(imagenPie)})
+		pie.patear()
+		
 		
 		self.acomodarPelota(1,posicionParaEvaluar)
-		if(self.estaLaPelotaAlLado())
+		posicionParaEvaluar.goRight(1)
+		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, 1)
 	
 	}
+	override method dibujarArco(){
+		arco.dibujarALaIzquierda()
+	}
+	override method inicializar(){
+		super()
+		keyboard.d().onPressDo({self.derecha()})
+		keyboard.a().onPressDo({self.izquierda()})
+		keyboard.w().onPressDo({self.saltar()})
+		keyboard.space().onPressDo({self.patear()})
+		self.dibujarArco()
+	}
 }
 object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "botinIzq1.png"){
-	method estaLaPelotaAlLado() = self.estaLaPelota(posicionParaEvaluar.left(1))
+	
+	override method rival() = jugadorIzq
+	
+	override method cambiarArco(altura,largo){
+		arco.reDibujarDerecha(altura,largo)
+	}
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		
 		
-		self.cambiarPie("botinIzq1Patear.png")
-		game.schedule(30,{self.cambiarPie(imagenPie)})
+		pie.patear()
 		self.acomodarPelota(-1,posicionParaEvaluar)
-		if(self.estaLaPelotaAlLado())
+		posicionParaEvaluar.goLeft(1)
+		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
 	}
+	override method dibujarArco(){
+		arco.dibujarALaDerecha()
+	}
+	override method inicializar(){
+		super()
+		keyboard.right().onPressDo({self.derecha()})
+		keyboard.left().onPressDo({self.izquierda()})
+		keyboard.up().onPressDo({self.saltar()})
+		keyboard.enter().onPressDo({self.patear()})
+		self.dibujarArco()
+	}
+}
+object jugadores{
+	
+	var property velEmpujeNormal = 1
+	var property fuerzaXNormal = 2
+	var property fuerzaYNormal = 3
+	var property saltoNormal = 1.5
+	
+	method esGol(posicion) = jugadorIzq.arco().esGol(posicion) || jugadorDer.arco().esGol(posicion)
+	method reiniciarMarcador(){
+		jugadorIzq.arco().reiniciarMarcador()
+		jugadorDer.arco().reiniciarMarcador()
+	}
+	method moverse() {
+		jugadorIzq.moverse()
+		jugadorDer.moverse()
+		
+	}
+	method inicializar(){
+		jugadorIzq.inicializar()
+		jugadorDer.inicializar()
+	} 
+	method resetear(){
+		jugadorIzq.resetear()
+		jugadorDer.resetear()
+	}
+	method gravedad(g){
+		jugadorIzq.gravedad(g)
+		jugadorDer.gravedad(g)
+	}
+	method posicionesIniciales(p1,p2){
+		jugadorIzq.position().posicionInicial(p1.key(),p2.value())
+		jugadorDer.position().posicionInicial(p2.key(),p2.value())
+	}
+	method activarPowerUp(posicion, powerUp){
+		if(jugadorIzq.estaEn(posicion))
+			powerUp.activar(jugadorIzq)
+		else if(jugadorDer.estaEn(posicion))
+			powerUp.activar(jugadorDer)
+	}
+	method cambiarVelEmpuje(vel){
+		jugadorIzq.velX(vel)
+		jugadorDer.velX(vel)
+	}
+	method cambiarRozamiento(roz){
+		jugadorIzq.rozamiento(roz)
+		jugadorDer.rozamiento(roz)
+	}
+	
 }

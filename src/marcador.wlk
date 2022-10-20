@@ -2,25 +2,51 @@ import wollok.game.*
 import mutablePosition.*
 import juego.*
 
+
+class ContadorCiclico{
+	var property valor = 0
+	var property max
+	
+	method next(){
+		if(valor == max)
+			valor = 0
+		else
+			valor++
+			
+		return valor
+	}
+		
+	method prev(){
+		if(valor == 0)
+			valor = max
+		else
+			valor--
+		return valor	
+	}
+	
+	method reiniciar(){
+		valor = 0
+		return valor
+	}
+		
+}
+
 class Numero{
-	var property n
+	
 	var x
 	var y
 	var property position = new MutablePosition(x = x, y = y)
+	var property contador = new ContadorCiclico(max = 9)
+	var property n = contador.valor()
 	
 	method image() = n.toString()+".png"
 	method aumentar(){
-		if(n == 9)
-			n = 0
-		else
-			n++
+		n = contador.next()
 	}
 	method descontar(){
-		if(n == 0)
-			n = 9
-		else
-			n--
+		n = contador.prev()
 	}
+	override method toString() = "numero"
 }
 
 class Contador{

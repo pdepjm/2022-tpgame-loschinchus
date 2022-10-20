@@ -4,14 +4,17 @@ import wollok.game.*
 
 package particulas{
 	class Particula{
-		var property image = "circle_32x32.png"
+		var property image = "pelota0.png"
 		var property position = new MutablePosition()
 		var property velocidad= new Velocidad()
 		var property gravedad = juego.g()// valor por defecto de gravedad
-		var property choque = new Choque() //objeto choque
+		
 		
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
 		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
+		
+		var property rozamientoNormal = 0.8
+		var property reboteNormal = 0.6
 		
 		method resetear(){
 			position.reestablecer()
@@ -29,7 +32,22 @@ package particulas{
 			}
 		}
 		method estaEnElPiso() = position.y() == juego.y0()
-		method moverse(){
+		
+		method moverse(x,y){
+			position.goTo(x,y)
+		}
+		method moverse(nuevaPosicion){
+			position = nuevaPosicion
+		}
+		
+		method moverse()
+		
+	}
+	object pelota inherits Particula(image = "pelota0.png"){
+		
+		var property choque = new Choque() //objeto choque
+		
+		override method moverse(){
 			
 			choque.analizarEstadoActual(position, velocidad) //analiza la posicion actual y se fija que tipos de choque se esta produciendo
 			
@@ -44,10 +62,10 @@ package particulas{
 				self.rebotarY() //rebota verticalmente
 				if(velocidad.vy() < 0 && velocidad.vy() > -1){ 	//si la velocidad vertical es pequeña y esta en una particula significa que
 					gravedad = 0								//se apoya sobre ella y por lo tanto la gravedad no actua
-					velocidad.factorVx(rozamiento)				// y ademas actua el rozamiento	y no se permite roce horizontal			
-					}											// para no toskearse con las particulas
+					velocidad.factorVx(rozamiento)				// y ademas actua el rozamiento	y no se permite colision horizontal			
+					}											// para no trabarse con las particulas
 				else	
-					self.rebotarX()								//sino se puede rebota sin problemas	
+					self.rebotarX()								//sino se puede rebotar sin problemas	
 			}
 			
 			
@@ -57,8 +75,6 @@ package particulas{
 				
 			if(choque.chocaConPared()) //si choca con alguna pared rebota
 				self.rebotarX()
-				
-			
 			
 			choque = new Choque()//el choque anterior se pierde y se genera uno nuevo
 			choque.irAlProximoChoque(position,velocidad) //si a la velocidad actual chocamos contra algo, ni bien ocura el presunto choque guardamos esa pocision
@@ -78,15 +94,7 @@ package particulas{
 			position.goTo(x,y)
 			
 		}
-		method moverse(x,y){
-			position.goTo(x,y)
-		}
-		method moverse(nuevaPosicion){
-			position = nuevaPosicion
-		}
 		
-	}
-	object pelota inherits Particula(image = "soccer_ball_32x32.png"){
 		method patear(fuerzaX,fuerzaY, signo){
 			velocidad.nuevaVelocidad( (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()  ) 
 		}
@@ -114,6 +122,7 @@ package particulas{
 	method acelerarY(a){
 		vy += a
 	}
+	method modulo() = 4*vx + vy
 
 	
 	override method toString() = vx.toString().concat(" -> ".concat(vy.toString()))
@@ -148,9 +157,10 @@ class Choque{ //Este es el objeto jugoso
 		//if(esNecesarioAnalizar)
 	}
 	
-	method hayAlguienEn(x,y, n){ //Busca n particulas en la posicion (x,y)
+	method hayAlguienEn(x,y,n){ //Busca n particulas en la posicion (x,y)
 		posicionBuscarParticulas.goTo(x,y)
-		return game.getObjectsIn(posicionBuscarParticulas).size() > n
+		const objetosEnPosicion = game.getObjectsIn(posicionBuscarParticulas)
+		return objetosEnPosicion.size() > n && !(objetosEnPosicion.any({o => o.toString() == "numero"})) //para no chocar con los marcadores
 	}
 	
 	method analizarEstadoActual(posicion, velocidad){ //Ocurre al principio del movimiento de la pelota
