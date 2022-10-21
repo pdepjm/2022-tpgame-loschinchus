@@ -127,8 +127,8 @@ object menu{
 	
 	var property cabezaIzq = new Item(position = posicionIzq, image = "messiIzq.png", elementos = ["messiIzq.png"])
 	var property cabezaDer = new Item(position = posicionDer, image = "messiDer.png", elementos = ["messiDer.png"])
-	var property pieIzq = new Item(position = posicionIzq, image = "botinDer1.png", elementos = ["botinDer1.png"])
-	var property pieDer = new Item(position = posicionDer, image = "botinIzq1.png", elementos = ["botinIzq1.png"])
+	var property pieIzq = new Item(position = posicionIzq, image = "botinDer1.png", elementos = ["botinIzq1.png","botinIzq2.png","botinIzq3.png","botinIzq4.png","botinIzq5.png", "pieIzq.png", "pantuflaIzq.png"])
+	var property pieDer = new Item(position = posicionDer, image = "botinIzq1.png", elementos = ["botinDer1.png","botinDer2.png","botinDer3.png","botinDer4.png","botinDer5.png", "pieDer.png", "pantuflaDer.png"])
 	
 	const listoIzq = new Listo(position = posicionIzq.down(4).left(2))
 	const listoDer = new Listo(position = posicionDer.down(4).left(2))
