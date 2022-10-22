@@ -2,6 +2,15 @@ import mutablePosition.*
 import juego.*
 import wollok.game.*
 
+object sonidoPelota{
+	method play(){
+		game.sound("pelota.mp3").play()
+	}
+}
+object sinSonido{
+	method play(){}
+}
+
 package particulas{
 	class Particula{
 		var property image = "pelota0.png"
@@ -16,6 +25,8 @@ package particulas{
 		var property rozamientoNormal = 0.8
 		var property reboteNormal = 0.6
 		
+		const sonidoRebote = sinSonido
+		
 		method resetear(){
 			position.reestablecer()
 			velocidad.nuevaVelocidad(0,0)
@@ -24,11 +35,13 @@ package particulas{
 		method rebotarX(){ //si la velocidad en x es lo suficientemente grande se puede rebotar
 			if(velocidad.vx().abs() > 1){
 				velocidad.factorVx(-rebote)
+				sonidoRebote.play()
 			}
 		}
 		method rebotarY(){  //si la velocidad en y es lo suficientemente grande se puede rebotar
 			if(velocidad.vy().abs() > 1){
 				velocidad.factorVy(-rebote)
+				sonidoRebote.play()
 			}
 		}
 		method estaEnElPiso() = position.y() == juego.y0()
@@ -43,9 +56,10 @@ package particulas{
 		method moverse()
 		
 	}
-	object pelota inherits Particula(image = "pelota0.png"){
+	object pelota inherits Particula(image = "pelota0.png", sonidoRebote = sonidoPelota){
 		
 		var property choque = new Choque() //objeto choque
+		
 		
 		override method moverse(){
 			
@@ -70,11 +84,15 @@ package particulas{
 			
 			
 			
-			if(choque.chocaConTecho() || choque.chocaConPiso()) //si choca con el piso o con el techo rebota
+			if(choque.chocaConTecho() || choque.chocaConPiso()){ //si choca con el piso o con el techo rebota
 				self.rebotarY()
+				}
 				
-			if(choque.chocaConPared()) //si choca con alguna pared rebota
+			if(choque.chocaConPared()){
 				self.rebotarX()
+		
+			} //si choca con alguna pared rebota
+				
 			
 			choque = new Choque()//el choque anterior se pierde y se genera uno nuevo
 			choque.irAlProximoChoque(position,velocidad) //si a la velocidad actual chocamos contra algo, ni bien ocura el presunto choque guardamos esa pocision
@@ -97,6 +115,7 @@ package particulas{
 		
 		method patear(fuerzaX,fuerzaY, signo){
 			velocidad.nuevaVelocidad( (fuerzaX + velocidad.vx().abs())*signo , fuerzaY + velocidad.vy().abs()  ) 
+			sonidoRebote.play()
 		}
 	}
 	

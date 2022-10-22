@@ -7,6 +7,8 @@ class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	
 	
 	var property duracion = 10000
+	const sonido = "powerUp.mp3"
+	
 	
 	override method resetear(){
 		position.goTo(0.randomUpTo(juego.w()-1), 3.randomUpTo(juego.h()-1-6))
@@ -42,6 +44,7 @@ class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	}
 	
 	method activar(jugador){
+		game.sound(sonido).play()
 		self.quitar()
 		self.efecto(jugador)
 		game.schedule(duracion,{self.desactivar(jugador)})

@@ -65,12 +65,14 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 		
 	var property itemActual = null
 	var property activado = false
+	const sonidoScroll = "scroll.mp3"
 		
 	override method next(){
 		if(activado){
 			itemActual = elementos.get(contador.next())
 			self.cambiarImagen()
 			self.position(itemActual.posicionParaSelector())
+			game.sound(sonidoScroll).play()
 		}
 	}
 	
@@ -79,18 +81,23 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 			itemActual = elementos.get(contador.prev())
 			self.cambiarImagen()
 			self.position(itemActual.posicionParaSelector())
+			game.sound(sonidoScroll).play()
 		
 		}
 	}
 	
 	method slideNext(){
-		if(activado)
+		if(activado){
 			itemActual.next()
+			game.sound(sonidoScroll).play()
+		}
 	}
 	
 	method slidePrev(){
-		if(activado)
+		if(activado){
 			itemActual.prev()
+			game.sound(sonidoScroll).play()
+		}
 	}
 	
 	method first(){
@@ -120,15 +127,31 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 	
 }
 
+object sonidoMenu{
+	var cancion
+	method listo(){
+		game.sound( "ready.mp3").play()
+	}
+	method cancionDeFondo(){
+		cancion = game.sound("cumbiaLosTrapos.mp3")
+		cancion.shouldLoop(true)
+		cancion.play()
+	}
+	method pararCancion(){
+		cancion.shouldLoop(false)
+		cancion.stop()
+	}
+}
+
 object menu{
 	
 	var property posicionIzq = new MutablePosition(x = juego.medioX()-4, y =  juego.medioY())
 	var property posicionDer = new MutablePosition(x = juego.medioX()+4, y =  juego.medioY())
 	
-	var property cabezaIzq = new Item(position = posicionIzq, image = "messiIzq.png", elementos = ["messiIzq.png"])
-	var property cabezaDer = new Item(position = posicionDer, image = "messiDer.png", elementos = ["messiDer.png"])
-	var property pieIzq = new Item(position = posicionIzq, image = "botinDer1.png", elementos = ["botinIzq1.png","botinIzq2.png","botinIzq3.png","botinIzq4.png","botinIzq5.png", "pieIzq.png", "pantuflaIzq.png"])
-	var property pieDer = new Item(position = posicionDer, image = "botinIzq1.png", elementos = ["botinDer1.png","botinDer2.png","botinDer3.png","botinDer4.png","botinDer5.png", "pieDer.png", "pantuflaDer.png"])
+	var property cabezaIzq = new Item(position = posicionIzq, image = "messiIzq.png", elementos = ["messiIzq.png","mbappeIzq.png","bichoIzq.png","cristinaIzq.png","mileiIzq.png","jesusIzq.png"])
+	var property cabezaDer = new Item(position = posicionDer, image = "messiDer.png", elementos = ["messiDer.png","mbappeDer.png","bichoDer.png","cristinaDer.png","mileiDer.png","jesusDer.png"])
+	var property pieIzq = new Item(position = posicionIzq, image = "botinIzq1.png", elementos = ["botinIzq1.png","botinIzq2.png","botinIzq3.png","botinIzq4.png","botinIzq5.png", "pieIzq.png", "pantuflaIzq.png"])
+	var property pieDer = new Item(position = posicionDer, image = "botinDer1.png", elementos = ["botinDer1.png","botinDer2.png","botinDer3.png","botinDer4.png","botinDer5.png", "pieDer.png", "pantuflaDer.png"])
 	
 	const listoIzq = new Listo(position = posicionIzq.down(4).left(2))
 	const listoDer = new Listo(position = posicionDer.down(4).left(2))
@@ -170,7 +193,9 @@ object menu{
 		selectorDer.first()
 		
 		game.addVisual(selectorIzq)
-		game.addVisual(selectorDer)		
+		game.addVisual(selectorDer)
+		
+		sonidoMenu.cancionDeFondo()
 	}
 	
 	method chequearListos(){
@@ -187,8 +212,8 @@ object menu{
 			jugadorDer.cambiarCabeza(cabezaDer.image())
 			jugadorDer.cambiarPie(pieDer.image())
 			
-			
-			game.schedule(1500, {partido.iniciar()})
+			sonidoMenu.listo()
+			game.schedule(1500, {sonidoMenu.pararCancion() partido.iniciar()})
 		
 		}
 	}

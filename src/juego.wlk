@@ -51,6 +51,28 @@ object juego { //juego principal
 	
 }
 
+object sonidoPartido{
+	var cancha
+	method gol(){
+		game.sound("gol.mp3").play()
+	}
+	method final(){
+		game.sound("silbatoFinal.mp3").play()
+	}
+	method silbato(){
+		game.sound("silbato.mp3").play()
+	}
+	method cancha(){
+		cancha = game.sound("cancha.mp3")
+		cancha.shouldLoop(true)
+		cancha.play()
+	}
+	method detenerCancha(){
+		cancha.shouldLoop(false)
+		cancha.stop()
+	}
+}
+
 object partido{
 	const property elementos = #{}
 	
@@ -78,6 +100,8 @@ object partido{
 		self.agregarElemento(pelota)
 		self.agregarElemento(jugadores)
 		game.addVisual(pelota)
+		
+		sonidoPartido.cancha()
 		
 		game.onTick(30,"Movimiento",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
@@ -135,6 +159,7 @@ object partido{
 		temporizador.resetear(duracionPartido)
 	}
 	method saqueDelMedio(){
+		sonidoPartido.silbato()
 		noEsGol = true
 		self.resetearElementos()
 	}
@@ -142,10 +167,14 @@ object partido{
 		const posicionPelota = pelota.position()
 		if(jugadores.esGol(posicionPelota)){
 			noEsGol = false
+			sonidoPartido.gol()
 			game.schedule(2000, {self.saqueDelMedio()})
 		}
 	}
 	method terminar(){
+		sonidoPartido.final()
+		sonidoPartido.detenerCancha()
+		
 		game.removeTickEvent("Movimiento")
 		game.removeTickEvent("Temporizador")
 		game.removeTickEvent("PowerUp")
