@@ -48,6 +48,11 @@ class Jugador{
 	
 	method estaEn(posicion) = puntos.any({p => p.position() == posicion})
 	
+	method actualizarImagenes(){
+		cabeza.actualizar()
+		pie.actualizar()
+	}
+	
 	method cambiarCabeza(imagen){
 		cabeza.cambiarImagen(imagen)
 	}
@@ -163,6 +168,8 @@ class Jugador{
 		game.addVisual(pie)
 	}
 	
+	method goles() = arco.marcador().valor()
+	
 	method cambiarArco(altura,largo)
 	method patear()
 	method dibujarArco()
@@ -243,6 +250,9 @@ object jugadores{
 	var property saltoNormal = 1.5
 	
 	method esGol(posicion) = jugadorIzq.arco().esGol(posicion) || jugadorDer.arco().esGol(posicion)
+	
+	method quienGana() = if (jugadorIzq.goles() > jugadorDer.goles()) jugadorDer else if(jugadorDer.goles() > jugadorIzq.goles()) jugadorIzq
+	
 	method reiniciarMarcador(){
 		jugadorIzq.arco().reiniciarMarcador()
 		jugadorDer.arco().reiniciarMarcador()

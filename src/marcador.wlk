@@ -135,7 +135,7 @@ object contSeg {
 }
 object temporizador{
 	
-	var property position = new MutablePosition(x = 12, y = juego.h()-1-2)
+	var property position = new MutablePosition(x = juego.medioX()-4, y = juego.h()-1-2)
 	
 	var property seAcaboElTiempo = false
 	
