@@ -103,7 +103,7 @@ object partido{
 		
 		sonidoPartido.cancha()
 		
-		game.onTick(30,"Movimiento",{self.moverElementos()})
+		game.onTick(30,"MoverElementos",{self.moverElementos()})
 		game.onTick(1000,"Temporizador",{temporizador.actualizar()})
 		game.onTick(10000.randomUpTo(40000),"PowerUp",{self.agregarPowerUp()} )
 		game.onTick(500, "Chequear pelota trabada", {self.chequearSiSeTraboLaPelota()})
@@ -138,8 +138,11 @@ object partido{
 			e.moverse()
 			if(noEsGol)
 				self.chequearGol()
-			if(temporizador.seAcaboElTiempo())
-				game.schedule(1000,{self.terminar()})
+			if(temporizador.seAcaboElTiempo()){
+				game.removeTickEvent("MoverElementos")
+				self.terminar()
+				
+				}
 		})
 	}
 	method agregarElemento(e){
@@ -175,12 +178,47 @@ object partido{
 		sonidoPartido.final()
 		sonidoPartido.detenerCancha()
 		
-		game.removeTickEvent("Movimiento")
+		
 		game.removeTickEvent("Temporizador")
 		game.removeTickEvent("PowerUp")
 		game.removeTickEvent("Chequear pelota trabada")
 		
-		menu.iniciar()
+		pantallaGanador.iniciar()
 	}
+}
+object pantallaGanador{
+	const ganadorImg = new Imagen(image = "ganador.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY() ))
+	const banderinImg = new Imagen(image = "winner.png",position = new MutablePosition(x = juego.medioX()-3,y = juego.medioY()+2) )
+	const fondoNegro = new Imagen (image = "fondoNegro.png")
+	const empate = new Imagen(image = "empate.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY() ))
+	const zzz = new Imagen(image = "zzz.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY()-4 ))
+	const presionaParaContinuar = new Imagen(image = "presioneEnter.png", position = new MutablePosition(x = juego.medioX()-12, y = juego.y0() ))
+	
+	var musica
+	
+	method iniciar(){
+		keyboard.enter().onPressDo({musica.stop() menu.iniciar()})
+		game.addVisual(fondoNegro)
+		game.schedule(50,{game.addVisual(presionaParaContinuar)})
+		const ganador = jugadores.quienGana()
+		if (ganador == null)
+			self.empate()
+		else
+			self.ganador(ganador)
+	}
+	
+	method empate(){
+		musica = game.sound("rickroll.mp3")
+		musica.play()
+		game.schedule(50,{game.addVisual(empate) game.addVisual(zzz)})
+	}
+	method ganador(jugador){
+		musica = game.sound("ganador.mp3")
+		musica.play()
+		jugador.position().goTo(juego.medioX()-1, juego.medioY()-3)
+		jugador.actualizarImagenes()
+		game.schedule(50,{game.addVisual(ganadorImg) game.addVisual(banderinImg)})
+	}
+	
 }
 

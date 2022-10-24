@@ -315,6 +315,10 @@ package graficos{
 		method cambiarImagen(nuevaImagen){
 			image = nuevaImagen
 		}
+		method actualizar(){
+			game.removeVisual(self)
+			game.schedule(50,{game.addVisual(self)})
+		}
 		method image() = image
 	}
 	

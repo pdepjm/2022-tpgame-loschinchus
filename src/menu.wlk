@@ -143,10 +143,14 @@ object sonidoMenu{
 	}
 }
 
+object logo inherits Imagen(image = "logo.png", position = new MutablePosition(x = juego.medioX()-8, y = juego.medioY() + 2)){
+	
+}
+
 object menu{
 	
-	var property posicionIzq = new MutablePosition(x = juego.medioX()-4, y =  juego.medioY())
-	var property posicionDer = new MutablePosition(x = juego.medioX()+4, y =  juego.medioY())
+	var property posicionIzq = new MutablePosition(x = juego.medioX()-5, y =  juego.medioY()-4)
+	var property posicionDer = new MutablePosition(x = juego.medioX()+4, y =  juego.medioY()-4)
 	
 	var property cabezaIzq = new Item(position = posicionIzq, image = "messiIzq.png", elementos = ["messiIzq.png","mbappeIzq.png","bichoIzq.png","cristinaIzq.png","mileiIzq.png","jesusIzq.png"])
 	var property cabezaDer = new Item(position = posicionDer, image = "messiDer.png", elementos = ["messiDer.png","mbappeDer.png","bichoDer.png","cristinaDer.png","mileiDer.png","jesusDer.png"])
@@ -194,6 +198,7 @@ object menu{
 		
 		game.addVisual(selectorIzq)
 		game.addVisual(selectorDer)
+		game.addVisual(logo)
 		
 		sonidoMenu.cancionDeFondo()
 	}
