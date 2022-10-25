@@ -12,46 +12,48 @@ describe "Tests Jugador"{
 	method initialize()
 	{
 		juego.inicializar()
-		partido.iniciar()
 		
 	}
 	
 	test "Si un jugador se mueve a la derecha, su posicion en X aumenta en 1"{
 		
-		const posicionInicial = partido.jugador1().position().x()
-		partido.jugador1().derecha()
-		partido.moverElementos()
-		assert.equals(posicionInicial + 1, partido.jugador1().position().x())
+		const posicionInicial = jugadorIzq.position().x()
+		jugadorIzq.derecha()
+		jugadores.moverse()
+		assert.equals(posicionInicial + 1, jugadorIzq.position().x())
 		game.clear()
 		
 		
 	}
 	 
 	test "Si un jugador se mueve a la izquierda, su posicion en X disminuye en 1"{
-		const posicionInicial = partido.jugador1().position().x()
-		partido.jugador1().izquierda()
-		partido.moverElementos()		
-		assert.equals(partido.jugador1().position().x(), posicionInicial - 1)
+		const posicionInicial = jugadorIzq.position().x()
+		jugadorIzq.izquierda()
+		jugadores.moverse()		
+		assert.equals(jugadorIzq.position().x(), posicionInicial - 1)
 				
 	}
 	
 	test "Si un jugador salta, su velocidad en Y aumenta"{
-		const velocidadInicial = partido.jugador1().velocidad().vy()		
-		partido.jugador1().saltar()
-		assert.that(partido.jugador1().velocidad().vy() > velocidadInicial)			
+		const velocidadInicial = jugadorIzq.velocidad().vy()		
+		jugadorIzq.saltar()
+		assert.that(jugadorIzq.velocidad().vy() > velocidadInicial)			
 	}
-}describe "Tests de Pelota"{
+}
+
+describe "Tests de Pelota"{
 	method initialize()
 	{
 		juego.inicializar()
-		partido.iniciar()
 		
 	}
+	
 	test "Si la pelota es pateada, su velocidad aumenta en ambas direcciones"{
-		const velocidadInicialX = partido.pelota().velocidad().vx()		
-		const velocidadInicialY = partido.pelota().velocidad().vy()		
-		partido.pelota().patear()
-		assert.that(partido.pelota().velocidad().vx() > velocidadInicialX)
-		assert.that(partido.pelota().velocidad().vy() > velocidadInicialY)
+		const velocidadInicialX = pelota.velocidad().vx()		
+		const velocidadInicialY = pelota.velocidad().vy()		
+		pelota.patear(2, 5, 1)
+		assert.that(pelota.velocidad().vx() > velocidadInicialX)
+		assert.that(pelota.velocidad().vy() > velocidadInicialY)
 	}
+
 }

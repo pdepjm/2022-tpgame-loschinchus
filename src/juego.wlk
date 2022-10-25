@@ -11,13 +11,10 @@ import menu.*
 object juego { //juego principal
 	const property w = 30 //ancho
 	const property h = 20 //alto
-<<<<<<< HEAD
-=======
-	
 	const property medioX = w.div(2)
 	const property medioY = h.div(2)
 	
->>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-loschinchus.git
+
 	const property y0 = 0 //suelo
 	const property x0 = 0 //pared izq
 	const property cellSize = 32
