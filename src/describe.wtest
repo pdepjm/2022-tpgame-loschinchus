@@ -37,7 +37,7 @@ describe "Tests Jugador"{
 }
 
 describe "Tests de Pelota"{
-	const posicion = new MutablePosition()
+	//const posicion = new MutablePosition()
 	method initialize(){
 		juego.inicializar()
 		soundProducer.provider(soundProviderMock)

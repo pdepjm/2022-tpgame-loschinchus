@@ -39,7 +39,7 @@ object soundProviderMock {
 
 
 object sonidoPartido{
-	var cancha
+	var canchaS
 	
 	method gol(){
 		soundProducer.sound("gol.mp3").play()
@@ -54,14 +54,14 @@ object sonidoPartido{
 	}
 	
 	method cancha(){
-		cancha = soundProducer.sound("cancha.mp3")
-		cancha.shouldLoop(true)
-		cancha.play()
+		canchaS = soundProducer.sound("cancha.mp3")
+		canchaS.shouldLoop(true)
+		canchaS.play()
 	}
 	
 	method detenerCancha(){
-		cancha.shouldLoop(false)
-		cancha.stop()
+		canchaS.shouldLoop(false)
+		canchaS.stop()
 	}
 }
 
