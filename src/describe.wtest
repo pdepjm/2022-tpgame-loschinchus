@@ -43,10 +43,14 @@ describe "Tests Jugador"{
 }
 
 describe "Tests de Pelota"{
+	const posicion = new MutablePosition()
+	
 	method initialize()
 	{
+		
 		juego.inicializar()
 		soundProducer.provider(soundProviderMock)
+		
 		
 	}
 	
@@ -56,6 +60,15 @@ describe "Tests de Pelota"{
 		pelota.patear(2, 5, 1)
 		assert.that(pelota.velocidad().vx() > velocidadInicialX)
 		assert.that(pelota.velocidad().vy() > velocidadInicialY)
+	}
+	
+	test "si la pelota entra en el arco, es gol"{
+		const arco = jugadorIzq.arco()
+		posicion.goTo(arco.inicioX(), 0)
+		
+
+		assert.that(arco.esGol(pelota.position()))
+		
 	}
 
 }

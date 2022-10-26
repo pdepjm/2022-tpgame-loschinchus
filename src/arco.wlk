@@ -2,6 +2,8 @@ import fisicas.graficos.*
 import juego.*
 import marcador.*
 import wollok.game.*
+
+
 class Arco{
 	var property altura
 	var property largo

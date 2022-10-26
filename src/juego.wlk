@@ -119,12 +119,13 @@ object partido{
 			e.moverse()
 			if(noEsGol)
 				self.chequearGol()
-			if(temporizador.seAcaboElTiempo()){
-				game.removeTickEvent("MoverElementos")
+			
+		})
+		
+		if(temporizador.seAcaboElTiempo())
 				self.terminar()
 				
-				}
-		})
+				
 	}
 	method agregarElemento(e){
 		elementos.add(e)
@@ -163,6 +164,7 @@ object partido{
 		game.removeTickEvent("Temporizador")
 		game.removeTickEvent("PowerUp")
 		game.removeTickEvent("Chequear pelota trabada")
+		game.removeTickEvent("MoverElementos")
 		
 		pantallaGanador.iniciar()
 	}
