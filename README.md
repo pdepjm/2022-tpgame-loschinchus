@@ -9,11 +9,16 @@
 
 ## Capturas
 
-(agregar)
+![capturaMenu](captura1.jpeg)
+![capturaPartido](captura2.jpeg)
+![capturaGanador](captura3.jpeg)
 
-## Reglas de Juego / Instrucciones
-
-(Escribirlas)
+## Instrucciones
+1. Elegí y vestí a tu jugador.
+2. Cuando estés preparado, cambiá el estado de "listo".
+3. Al comenzar el partido, tenés 1 minuto para meter la mayor cantidad de goles.
+¡Cuidado! Prestá atención si aparece un power up, podés activarlo pasando por su posición.
+	
 
 
 ## Otros
