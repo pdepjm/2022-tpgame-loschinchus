@@ -44,7 +44,6 @@ describe "Tests Jugador"{
 
 describe "Tests de Pelota"{
 	const posicion = new MutablePosition()
-	
 	method initialize()
 	{
 		
@@ -62,13 +61,14 @@ describe "Tests de Pelota"{
 		assert.that(pelota.velocidad().vy() > velocidadInicialY)
 	}
 	
-	test "si la pelota entra en el arco, es gol"{
-		const arco = jugadorIzq.arco()
-		posicion.goTo(arco.inicioX(), 0)
-		
+//	test "si la pelota entra en el arco, es gol"{
+//		const arco = jugadorIzq.arco()
+//		posicion.goTo(arco.inicioX(), 0)
+//		
+//
+//		assert.that(arco.esGol(pelota.position()))
+//		
+//	}
+//
 
-		assert.that(arco.esGol(pelota.position()))
-		
 	}
-
-}
