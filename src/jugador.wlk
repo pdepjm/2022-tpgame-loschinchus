@@ -207,11 +207,11 @@ object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "b
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
-		posicionParaEvaluar.goLeft(1)
 				
 		pie.patear()
 		
 		self.acomodarPelota(-1,posicionParaEvaluar)
+		posicionParaEvaluar.goLeft(1)
 		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
 	}
