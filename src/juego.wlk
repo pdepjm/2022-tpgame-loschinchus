@@ -14,25 +14,18 @@ object juego { //juego principal
 	const property h = 20 //alto
 	const property medioX = w.div(2)
 	const property medioY = h.div(2)
-	
-
 	const property y0 = 0 //suelo
 	const property x0 = 0 //pared izq
 	const property cellSize = 32
 	const property g = -0.5 //valor de  gravedad
 	
-	
-	
 	method iniciar(){
 		self.inicializar()
 		game.start()
-		//partido.iniciar()
-		
 		menu.iniciar()
 	}
 	
 	method inicializar() {
-		
 		game.width(w)
 		game.height(h)
 		game.cellSize(cellSize)
@@ -49,10 +42,7 @@ object juego { //juego principal
 	method limitarY(y){//previene que el parametro se salga de los limites Y
 		return y.limitBetween(y0,h-1)
 	}
-	
 }
-
-
 
 object partido{
 	const property elementos = #{}
@@ -64,11 +54,8 @@ object partido{
 	var property alturaArcos = 6
 	var property largoArcos = 3
 	var property duracionPartido = 1
-	
 	var property noEsGol = true
-	
 	var property gravedad = juego.g()
-	
 	var contadorPelotaTrabada = 0
 	
 	method iniciar(){
@@ -90,6 +77,7 @@ object partido{
 		game.onTick(500, "Chequear pelota trabada", {self.chequearSiSeTraboLaPelota()})
 		self.reiniciar()
 	}
+	
 	method agregarPowerUp(){
 		const powerUp = powerUps.get(0.randomUpTo(powerUps.size()-1))
 		powerUp.resetear()
@@ -101,17 +89,16 @@ object partido{
 		game.removeTickEvent("PowerUp")
 		game.onTick(10000.randomUpTo(40000),"PowerUp",{self.agregarPowerUp()} )
 	}
+	
 	method chequearSiSeTraboLaPelota(){
-		if(pelota.velocidad().vy().truncate(0) == 0 && !pelota.estaEnElPiso()){
+		if(pelota.velocidad().vy().truncate(0) == 0 && !pelota.estaEnElPiso()) 
 			contadorPelotaTrabada++
-		}
-		else
+		else 
 			contadorPelotaTrabada = 0
-		
 		if(contadorPelotaTrabada >= 3)
 			self.saqueDelMedio()
-		
 	}
+	
 	method moverElementos(){
 		elementos.forEach({
 			e =>
@@ -119,14 +106,11 @@ object partido{
 			e.moverse()
 			if(noEsGol)
 				self.chequearGol()
-			
 		})
-		
 		if(temporizador.seAcaboElTiempo())
-				self.terminar()
-				
-				
+				self.terminar()		
 	}
+	
 	method agregarElemento(e){
 		elementos.add(e)
 	}
@@ -138,16 +122,19 @@ object partido{
 			e.resetear()
 		})
 	}
+	
 	method reiniciar(){
 		self.saqueDelMedio()
 		jugadores.reiniciarMarcador()
 		temporizador.resetear(duracionPartido)
 	}
+	
 	method saqueDelMedio(){
 		sonidoPartido.silbato()
 		noEsGol = true
 		self.resetearElementos()
 	}
+	
 	method chequearGol(){
 		const posicionPelota = pelota.position()
 		if(jugadores.esGol(posicionPelota)){
@@ -156,44 +143,44 @@ object partido{
 			game.schedule(2000, {self.saqueDelMedio()})
 		}
 	}
+	
 	method terminar(){
 		sonidoPartido.final()
 		sonidoPartido.detenerCancha()
-		
 		
 		game.removeTickEvent("Temporizador")
 		game.removeTickEvent("PowerUp")
 		game.removeTickEvent("Chequear pelota trabada")
 		game.removeTickEvent("MoverElementos")
-		
 		pantallaGanador.iniciar()
 	}
 }
+
 object pantallaGanador{
 	const ganadorImg = new Imagen(image = "ganador.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY() ))
 	const banderinImg = new Imagen(image = "winner.png",position = new MutablePosition(x = juego.medioX()-3,y = juego.medioY()+2) )
 	const fondoNegro = new Imagen (image = "fondoNegro.png")
-	const empate = new Imagen(image = "empate.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY() ))
+	const empateI = new Imagen(image = "empate.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY() ))
 	const zzz = new Imagen(image = "zzz.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY()-4 ))
 	const presionaParaContinuar = new Imagen(image = "presioneEnter.png", position = new MutablePosition(x = juego.medioX()-12, y = juego.y0() ))
 	
 	var musica
 	
+	method ganador() = jugadores.quienGana()
+	
 	method iniciar(){
 		keyboard.enter().onPressDo({musica.stop() menu.iniciar()})
 		game.addVisual(fondoNegro)
 		game.schedule(50,{game.addVisual(presionaParaContinuar)})
-		const ganador = jugadores.quienGana()
-		if (ganador == null)
+		if (self.ganador() == null)
 			self.empate()
 		else
-			self.ganador(ganador)
+			self.ganador(self.ganador())
 	}
 	
 	method empate(){
-		musica = soundProducer.sound("rickroll.mp3")
-		musica.play()
-		game.schedule(50,{game.addVisual(empate) game.addVisual(zzz)})
+		musica = soundProducer.sound("rickroll.mp3").play()
+		game.schedule(50,{game.addVisual(empateI) game.addVisual(zzz)})
 	}
 	
 	method ganador(jugador){
