@@ -14,9 +14,6 @@ class Pie inherits Imagen{
 }
 
 class Jugador{
-	
-	
-	
 	var property pateaHaciaDerecha = true
 	var property position = new MutablePosition(x = 8, y = 0)
 	var property velocidad = new Velocidad()
@@ -45,7 +42,6 @@ class Jugador{
 	const cabeza = new Imagen(position = position, image = imagenCabeza)
 	const pie = new Pie(position = position, image = imagenPie)
 	
-	
 	method estaEn(posicion) = puntos.any({p => p.position() == posicion})
 	
 	method actualizarImagenes(){
@@ -60,7 +56,6 @@ class Jugador{
 		pie.cambiarImagen(imagen)
 	}
 	
-	
 	method estaEnElPiso() = position.y() == juego.y0()
 	
 	method resetear(){
@@ -69,32 +64,24 @@ class Jugador{
 	}
 	
 	method moverse(){
-		
 		if(self.estaEnElPiso() && hayRozamiento)
-				velocidad.factorVx(rozamiento)
+			velocidad.factorVx(rozamiento)
 		else
 			velocidad.acelerarY(gravedad)
 			
 		self.limitarVelocidad()
-		
 		position.goRight(velocidad.vx())
 		position.goUp(velocidad.vy())
-		
 		self.moverPuntos()
-		
 		hayRozamiento = true
-		
 	}
+	
 	method moverse(x,y){
-		puntos.forEach( {
-			p =>
-			if(game.hasVisual(p))
-				game.removeVisual(p)
-		}
-		)
+		puntos.forEach({p => if(game.hasVisual(p)) game.removeVisual(p)})
 		position.goTo(x,y)
 		puntos = self.devolverPuntos()
 	}
+	
 	method limitarVelocidad(){
 		const nuevaX = position.x() + velocidad.vx()
 		const nuevaX2 = nuevaX+1
@@ -106,24 +93,28 @@ class Jugador{
 			velocidad.vx(vx2)
 		else
 			velocidad.vx(vx1)
-		
-		
+	
 		velocidad.vy(juego.limitarY(nuevaY) - position.y())
 	}
+	
 	method moverPuntos(){
 		puntos.forEach({p => p.moverse(velocidad)})
 	}
+	
 	method devolverPuntos() = lineDrawer.dibujarPuntosInvisibles(position.x(),position.y(),position.x(),position.y()+2) + lineDrawer.dibujarPuntosInvisibles(position.x()+1,position.y(),position.x()+1,position.y()+2)
+	
 	method izquierda(){
 		hayRozamiento = false
 		self.evaluarEmpuje(-1)
 		velocidad.nuevaVelocidad(-velX,0)
 	}
+	
 	method derecha(){
 		hayRozamiento = false
 		self.evaluarEmpuje(1)
 		velocidad.nuevaVelocidad(velX,0)
 	}
+	
 	method saltar(){
 		if(self.estaEnElPiso())
 			velocidad.agregarVelocidad(0,salto)
@@ -145,19 +136,15 @@ class Jugador{
 			self.acomodarPelota(signo,posicionParaEvaluar)
 			posicionParaEvaluar.goLeft(1)
 			self.empujarPelota(signo,posicionParaEvaluar)
-			
-			}
+		}
 		else{
-			
 			posicionParaEvaluar.goRight(1)
 			self.acomodarPelota(signo,posicionParaEvaluar)
 			posicionParaEvaluar.goRight(1)
 			self.empujarPelota(signo,posicionParaEvaluar)
-			
-			}
-			
-			
+		}		
 	}
+	
 	method empujarPelota(signo,posicion){
 		if(self.estaLaPelota(posicion))
 			pelota.velocidad().agregarVelocidad(signo*fuerzaX + velocidad.vx(), 0)
@@ -174,10 +161,8 @@ class Jugador{
 	method patear()
 	method dibujarArco()
 	method rival()
-	
 }
 
- 
 object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "botinDer1.png"){
 	
 	override method rival() = jugadorDer
@@ -190,19 +175,18 @@ object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "b
 		posicionParaEvaluar.goTo(position.x(), position.y())
 		posicionParaEvaluar.goRight(1)
 		
-		
 		pie.patear()
-		
 		
 		self.acomodarPelota(1,posicionParaEvaluar)
 		posicionParaEvaluar.goRight(1)
 		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, 1)
-	
 	}
+	
 	override method dibujarArco(){
 		arco.dibujarALaIzquierda()
 	}
+	
 	override method inicializar(){
 		super()
 		keyboard.d().onPressDo({self.derecha()})
@@ -212,6 +196,7 @@ object jugadorIzq inherits Jugador(imagenCabeza = "messiIzq.png", imagenPie = "b
 		self.dibujarArco()
 	}
 }
+
 object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "botinIzq1.png"){
 	
 	override method rival() = jugadorIzq
@@ -222,17 +207,19 @@ object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "b
 	
 	override method patear(){
 		posicionParaEvaluar.goTo(position.x(), position.y())
-		
-		
-		pie.patear()
-		self.acomodarPelota(-1,posicionParaEvaluar)
 		posicionParaEvaluar.goLeft(1)
+				
+		pie.patear()
+		
+		self.acomodarPelota(-1,posicionParaEvaluar)
 		if(self.estaLaPelota(posicionParaEvaluar))
 			pelota.patear(2*fuerzaX, fuerzaY, -1)
 	}
+	
 	override method dibujarArco(){
 		arco.dibujarALaDerecha()
 	}
+	
 	override method inicializar(){
 		super()
 		keyboard.right().onPressDo({self.derecha()})
@@ -242,8 +229,8 @@ object jugadorDer inherits Jugador(imagenCabeza = "messiDer.png", imagenPie = "b
 		self.dibujarArco()
 	}
 }
+
 object jugadores{
-	
 	var property velEmpujeNormal = 1
 	var property fuerzaXNormal = 2
 	var property fuerzaYNormal = 3
@@ -257,40 +244,46 @@ object jugadores{
 		jugadorIzq.arco().reiniciarMarcador()
 		jugadorDer.arco().reiniciarMarcador()
 	}
+	
 	method moverse() {
 		jugadorIzq.moverse()
 		jugadorDer.moverse()
-		
 	}
+	
 	method inicializar(){
 		jugadorIzq.inicializar()
 		jugadorDer.inicializar()
 	} 
+	
 	method resetear(){
 		jugadorIzq.resetear()
 		jugadorDer.resetear()
 	}
+	
 	method gravedad(g){
 		jugadorIzq.gravedad(g)
 		jugadorDer.gravedad(g)
 	}
+	
 	method posicionesIniciales(p1,p2){
 		jugadorIzq.position().posicionInicial(p1.key(),p2.value())
 		jugadorDer.position().posicionInicial(p2.key(),p2.value())
 	}
+	
 	method activarPowerUp(posicion, powerUp){
 		if(jugadorIzq.estaEn(posicion))
 			powerUp.activar(jugadorIzq)
 		else if(jugadorDer.estaEn(posicion))
 			powerUp.activar(jugadorDer)
 	}
+	
 	method cambiarVelEmpuje(vel){
 		jugadorIzq.velX(vel)
 		jugadorDer.velX(vel)
 	}
+	
 	method cambiarRozamiento(roz){
 		jugadorIzq.rozamiento(roz)
 		jugadorDer.rozamiento(roz)
 	}
-	
 }

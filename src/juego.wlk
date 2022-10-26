@@ -163,7 +163,6 @@ object pantallaGanador{
 	const empateI = new Imagen(image = "empate.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY() ))
 	const zzz = new Imagen(image = "zzz.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY()-4 ))
 	const presionaParaContinuar = new Imagen(image = "presioneEnter.png", position = new MutablePosition(x = juego.medioX()-12, y = juego.y0() ))
-	
 	var musica
 	
 	method ganador() = jugadores.quienGana()
@@ -179,7 +178,8 @@ object pantallaGanador{
 	}
 	
 	method empate(){
-		musica = soundProducer.sound("rickroll.mp3").play()
+		musica = soundProducer.sound("rickroll.mp3")
+		musica.play()
 		game.schedule(50,{game.addVisual(empateI) game.addVisual(zzz)})
 	}
 	

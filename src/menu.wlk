@@ -6,20 +6,17 @@ import mutablePosition.*
 import marcador.ContadorCiclico
 import sonidos.*
 
-
 class Item inherits Imagen{
 	var property elementos
-	
 	var property posicionParaSelector = position
-	
 	var property contador = new ContadorCiclico(max = self.cantidadElementos()-1)
 	
 	method cantidadElementos() = elementos.size()
 	
 	method next(){
 		image = elementos.get(contador.next())
-		
 	}
+	
 	method prev(){
 		image = elementos.get(contador.prev())
 	}
@@ -27,6 +24,7 @@ class Item inherits Imagen{
 	method quitarElemento(elemento){
 		elementos.remove(elemento)
 	}
+	
 	method eliminarElementos(){
 		contador.valor(0)
 		contador.max(0)
@@ -44,7 +42,6 @@ class Item inherits Imagen{
 }
 
 class Listo inherits Item(image = "listoNO.png", elementos = ["listoSI.png", "listoNO.png"]){
-	
 	var property listo = true
 	
 	override method next(){
@@ -57,13 +54,9 @@ class Listo inherits Item(image = "listoNO.png", elementos = ["listoSI.png", "li
 		listo = !listo
 		menu.chequearListos()
 	}
-	
-	
 }
 
-
 class Selector inherits Item(image = "selector1.png", elementos = []){
-		
 	var property itemActual = null
 	var property activado = false
 	const sonidoScroll = "scroll.mp3"
@@ -83,7 +76,6 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 			self.cambiarImagen()
 			self.position(itemActual.posicionParaSelector())
 			soundProducer.sound(sonidoScroll).play()
-		
 		}
 	}
 	
@@ -108,10 +100,7 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 	}
 	
 	method cambiarImagen(){
-		if(itemActual.cantidadElementos() > 1)
-			image = "selector2.png"
-		else
-			image = "selector1.png"
+		if(itemActual.cantidadElementos() > 1) image = "selector2.png" else image = "selector1.png"
 	}
 	
 	override method agregarElemento(nuevoElemento){
@@ -122,22 +111,23 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 		super(muchosElementos)
 		muchosElementos.forEach({ e => game.addVisual(e)})
 	}
-	method reiniciar(){
-		
-	}
 	
+	method reiniciar(){}
 }
 
 object sonidoMenu{
 	var cancion
+	
 	method listo(){
 		soundProducer.sound( "ready.mp3").play()
 	}
+	
 	method cancionDeFondo(){
 		cancion = soundProducer.sound("cumbiaLosTrapos.mp3")
 		cancion.shouldLoop(true)
 		cancion.play()
 	}
+	
 	method pararCancion(){
 		cancion.shouldLoop(false)
 		cancion.stop()
@@ -145,11 +135,9 @@ object sonidoMenu{
 }
 
 object logo inherits Imagen(image = "logo.png", position = new MutablePosition(x = juego.medioX()-8, y = juego.medioY() + 2)){
-	
 }
 
 object menu{
-	
 	var property posicionIzq = new MutablePosition(x = juego.medioX()-5, y =  juego.medioY()-4)
 	var property posicionDer = new MutablePosition(x = juego.medioX()+4, y =  juego.medioY()-4)
 	
@@ -160,7 +148,6 @@ object menu{
 	
 	const listoIzq = new Listo(position = posicionIzq.down(4).left(2))
 	const listoDer = new Listo(position = posicionDer.down(4).left(2))
-	
 	var selectorIzq = new Selector(position = posicionIzq)
 	var selectorDer = new Selector(position = posicionDer)
 	
@@ -170,16 +157,14 @@ object menu{
 		pieIzq.posicionParaSelector(posicionIzq.left(2))
 		pieDer.posicionParaSelector(posicionDer.left(2))
 	}
+	
 	method iniciar(){
 		game.clear()
-		
 		listoIzq.next()
 		listoDer.next()
-		
 		selectorIzq.activado(true)
 		selectorDer.activado(true)
 				
-			
 		keyboard.right().onPressDo({selectorDer.slideNext()})
 		keyboard.left().onPressDo({selectorDer.slidePrev()})
 		keyboard.up().onPressDo({selectorDer.prev()})
@@ -189,18 +174,15 @@ object menu{
 		keyboard.a().onPressDo({selectorIzq.slidePrev()})
 		keyboard.w().onPressDo({selectorIzq.prev()})
 		keyboard.s().onPressDo({selectorIzq.next()})
-		
 	
 		selectorIzq.agregarElementos([cabezaIzq,pieIzq,listoIzq])
 		selectorDer.agregarElementos([cabezaDer,pieDer,listoDer])
-		
 		selectorIzq.first()
 		selectorDer.first()
 		
 		game.addVisual(selectorIzq)
 		game.addVisual(selectorDer)
 		game.addVisual(logo)
-		
 		sonidoMenu.cancionDeFondo()
 	}
 	
@@ -209,7 +191,6 @@ object menu{
 			
 			selectorIzq.activado(false)
 			selectorDer.activado(false)
-			
 			selectorIzq.eliminarElementos()
 			selectorDer.eliminarElementos()
 			
@@ -220,8 +201,6 @@ object menu{
 			
 			sonidoMenu.listo()
 			game.schedule(1500, {sonidoMenu.pararCancion() partido.iniciar()})
-		
 		}
 	}
-	
 }

@@ -3,7 +3,6 @@ import wollok.game.*
 class MutablePosition {//Posiciones de game pero mutables (codigo copiado)
   var property x = 0
   var property y = 0
-  
   var property xInicial = 0
   var property yInicial = 0
   
@@ -41,14 +40,12 @@ class MutablePosition {//Posiciones de game pero mutables (codigo copiado)
       y -= n
   }
   
-  method goTo(position)
-  {
+  method goTo(position){
   	x= position.x()
   	y = position.y()
   }
   
-  method goTo(_x,_y)
-  {
+  method goTo(_x,_y){
   	x = _x
   	y = _y
   }
@@ -70,12 +67,11 @@ class MutablePosition {//Posiciones de game pero mutables (codigo copiado)
     return (deltaX.square() + deltaY.square()).squareRoot() 
   }
   
-  method goToRandom(height)
-  {
+  method goToRandom(height){
   	self.goTo(0.randomUpTo(game.width()),height)
   }
 
-  method clear() {
+  method clear(){
     self.allElements().forEach{it => game.removeVisual(it)}
   }
   

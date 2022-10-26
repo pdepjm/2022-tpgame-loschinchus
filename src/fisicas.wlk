@@ -3,21 +3,16 @@ import juego.*
 import wollok.game.*
 import sonidos.*
 
-
 package particulas{
 	class Particula{
 		var property image = "pelota0.png"
 		var property position = new MutablePosition()
 		var property velocidad= new Velocidad()
 		var property gravedad = juego.g() // valor por defecto de gravedad
-		
-		
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
 		var property rozamiento = 0.8 //velocidad que queda al rozar con una superficie
-		
 		var property rozamientoNormal = 0.8
 		var property reboteNormal = 0.6
-		
 		const sonidoRebote = soundMock
 		
 		method resetear(){
@@ -31,31 +26,31 @@ package particulas{
 				sonidoRebote.play()
 			}
 		}
+		
 		method rebotarY(){  //si la velocidad en y es lo suficientemente grande se puede rebotar
 			if(velocidad.vy().abs() > 1){
 				velocidad.factorVy(-rebote)
 				sonidoRebote.play()
 			}
 		}
+		
 		method estaEnElPiso() = position.y() == juego.y0()
 		
 		method moverse(x,y){
 			position.goTo(x,y)
 		}
+		
 		method moverse(nuevaPosicion){
 			position = nuevaPosicion
 		}
 		
 		method moverse()
-		
 	}
+	
 	object pelota inherits Particula(image = "pelota0.png", sonidoRebote = sonidoPelota){
-		
 		var property choque = new Choque() //objeto choque
 		
-		
 		override method moverse(){
-			
 			choque.analizarEstadoActual(position, velocidad) //analiza la posicion actual y se fija que tipos de choque se esta produciendo
 			
 			if(!self.estaEnElPiso()){
@@ -75,18 +70,13 @@ package particulas{
 					self.rebotarX()								//sino se puede rebotar sin problemas	
 			}
 			
-			
-			
 			if(choque.chocaConTecho() || choque.chocaConPiso()){ //si choca con el piso o con el techo rebota
 				self.rebotarY()
 				}
-				
 			if(choque.chocaConPared()){
 				self.rebotarX()
-		
 			} //si choca con alguna pared rebota
 				
-			
 			choque = new Choque()//el choque anterior se pierde y se genera uno nuevo
 			choque.irAlProximoChoque(position,velocidad) //si a la velocidad actual chocamos contra algo, ni bien ocura el presunto choque guardamos esa pocision
 														// sino nada
@@ -103,7 +93,6 @@ package particulas{
 			else
 				y = juego.limitarY(position.y()+velocidad.vy().truncate(0))	//sino continuamos con nuestra velocidad normal
 			position.goTo(x,y)
-			
 		}
 		
 		method patear(fuerzaX,fuerzaY, signo){
@@ -136,34 +125,29 @@ package particulas{
 	}
 	method modulo() = 4*vx + vy
 
-	
 	override method toString() = vx.toString().concat(" -> ".concat(vy.toString()))
+	}
 }
-}
+
 class Choque{ //Este es el objeto jugoso
-	
 	//pueden existir 4 tipos de choque y la pelota se comportara diferente segun el tipo de choque
 	var property chocaConPiso = false 
 	var property chocaConTecho = false
 	var property chocaConPared = false
 	var property chocaConParticula = false
-	
 	//estos mensajes sirven para que la pelota sepa si el choque se produjo o no
 	var property hayProximoChoqueY = false
 	var property hayProximoChoqueX = false
-	
 	//Una posicion auxiliar que se usa en hayAlguienEn() para fijarnos si en esa posicion hay alguna particula 
 	var property posicionBuscarParticulas = new MutablePosition()
-	
 	//Las posiciones en si del presunto choque
 	var property choqueX = null
 	var property choqueY = null
 	
 	override method toString() = choqueX.toString()+" -> "+choqueY.toString()+" : "+"["+chocaConPiso.toString()+", "+chocaConTecho.toString()+", "+chocaConPared.toString()+", "+chocaConParticula.toString()+"]"
 	
-	
 	method irAlProximoChoque(posicion, velocidad){
-		choqueX = posicion.x()						//nos pasan la posicion y la velocidad y analizamos la trayectoria que llevamos para buscar choques
+		choqueX = posicion.x()			//nos pasan la posicion y la velocidad y analizamos la trayectoria que llevamos para buscar choques
 		choqueY = posicion.y()
 		self.analizarTrayectoria(velocidad)
 		//if(esNecesarioAnalizar)
@@ -180,7 +164,6 @@ class Choque{ //Este es el objeto jugoso
 		choqueY = posicion.y()
 		
 		if(hayProximoChoqueX || hayProximoChoqueY || self.estaEnElLimite(choqueX, choqueY)){ //Si venimos de un choque o estamos en una posicion limite
-			
 			const posibleX = velocidad.vx()+choqueX //la posicion a donde nuestra velocidad nos quiere llevar
 			const posibleY = velocidad.vy()+choqueY
 			
@@ -188,16 +171,13 @@ class Choque{ //Este es el objeto jugoso
 			chocaConTecho = posibleY >= juego.h()-1 // si traspasa el techo
 			chocaConPared = posibleX <= juego.y0() || posibleX >= juego.w()-1 // si traspasa una pared
 			chocaConParticula = self.hayAlguienEn(choqueX,choqueY,1) // si choca con alguien en la posicion actual
-		
 		}
-		
-		
 	}
+	
 	method estaEnElLimite(x,y) = self.estaEnLimiteX(x) || self.estaEnLimiteY(y)
 	method estaEnLimiteX(x) = x == juego.x0() || x == juego.w()-1 
 	method estaEnLimiteY(y) = y == juego.x0() || y == juego.h()-1  
 	method analizarSiHayProximoChoque(x,y){//analiza una posicion y si puede existir un choque en ella
-	
 		if(self.hayAlguienEn(x,y,0)){ //si hay una particula choca en ambas direcciones
 			hayProximoChoqueX = true
 			hayProximoChoqueY = true
@@ -216,13 +196,9 @@ class Choque{ //Este es el objeto jugoso
 			if(hayProximoChoqueY)
 				choqueY = y
 		}
-		
-		
-		
-		
 	}
+	
 	method analizarTrayectoria(velocidad){//Metodo complejo pero es donde esta el juguito dela carne y lo que hace a los choques posibles
-		
 		//A grandes rasgos lo que hace es dada una velocidad y la posicion actual, "dibuja" la recta que representaria la trayectoria desde
 		//la posicion actual hacia la nueva posicion, a la cual al velocidad nos lleva. Por dibujar se refiere a que obtiene cada punto de la recta
 		//desde el punto actual hacia el siguiente y evalua los choques de cada uno con el metodo analizarSiHayProximoChoque(). Esto lo hace 
@@ -235,7 +211,6 @@ class Choque{ //Este es el objeto jugoso
 		
 		const deltaX = velocidad.vx().truncate(0)
 		const deltaXABS = deltaX.abs()
-		
 		const deltaY = velocidad.vy().truncate(0)
 		const deltaYABS = deltaY.abs()
 		
@@ -248,14 +223,11 @@ class Choque{ //Este es el objeto jugoso
 		
 		const deltaX2 = 2*deltaX
 		const deltaX2ABS = deltaX2.abs()
-		
 		const deltaY2 = 2*deltaY
 		const deltaY2ABS = deltaY2.abs()
 		
-		
 		var xk = choqueX
 		var yk = choqueY
-		
 		
 		const pintarLinea = { deltaD2ABS, deltaIABS, deltaI2ABS, xEsIndependiente =>
 			 var p = deltaD2ABS - deltaIABS
@@ -277,20 +249,18 @@ class Choque{ //Este es el objeto jugoso
 			 	p = p + deltaD2ABS - deltaI2ABS
 			 }
 				 
-				 })
+			})
 		}
-		
-		//self.analizarSiHayChoque(xk,yk)
 		
 		if(deltaYABS <= deltaXABS) //es decir |m| <= 1 -> conviene pensarlo como y = f(x)
 			pintarLinea.apply(deltaY2ABS, deltaXABS, deltaX2ABS, true)
 		else //es decir |m| > 1 -> conviene pensarlo como x = f(y)
 			pintarLinea.apply(deltaX2ABS, deltaYABS, deltaY2ABS, false)
-		
 	}
 }
 
 package graficos{
+	
 	class PuntoInvisible{ //Hace un punto invisible
 		var property position = new MutablePosition()
 		
@@ -299,12 +269,15 @@ package graficos{
 			position.goUp(velocidad.vy())
 		}
 	}
+	
 	class Punto inherits PuntoInvisible{ //Un puntito para dibujar
 		var image = "circle_32x32.png"
 		method image() = image
 	}
+	
 	class Imagen inherits PuntoInvisible{
 		var image
+		
 		method cambiarImagen(nuevaImagen){
 			image = nuevaImagen
 		}
@@ -319,14 +292,13 @@ package graficos{
 	method line(x1,y1,x2,y2, efecto){
 		const deltaX = x2-x1
 		const deltaXABS = deltaX.abs()
-		
 		const puntos = []
-		
 		const deltaY = y2-y1
 		const deltaYABS = deltaY.abs()
 		
 		var signoX = 1
 		var signoY = 1
+		
 		if(deltaX < 0)
 			signoX = -1
 		if(deltaY < 0)
@@ -334,14 +306,11 @@ package graficos{
 		
 		const deltaX2 = 2*deltaX
 		const deltaX2ABS = deltaX2.abs()
-		
 		const deltaY2 = 2*deltaY
 		const deltaY2ABS = deltaY2.abs()
 		
-		
 		var xk = x1
 		var yk = y1
-		
 		
 		const pintarLinea = { deltaD2ABS, deltaIABS, deltaI2ABS, xEsIndependiente =>
 			 var p = deltaD2ABS - deltaIABS
@@ -363,7 +332,7 @@ package graficos{
 			 	p = p + deltaD2ABS - deltaI2ABS
 			 }
 				 
-				 })
+			})
 		}
 		
 		puntos.add(efecto.apply(xk,yk))
@@ -376,9 +345,9 @@ package graficos{
 		
 		return puntos
 	}
+	
 	method dibujarPuntosInvisibles(x1,y1,x2,y2) = self.line(x1,y1,x2,y2,{x,y => const punto = new PuntoInvisible(position = new MutablePosition(x = x, y = y)) game.addVisual(punto) return punto })
 	method dibujarPuntos(x1,y1,x2,y2) = self.line(x1,y1,x2,y2,{x,y => const punto = new Punto(position = new MutablePosition(x = x, y = y)) game.addVisual(punto) return punto})
 	method dibujarImagenes(x1,y1,x2,y2,imagen) = self.line(x1,y1,x2,y2,{x,y => const img = new Imagen(position = new MutablePosition(x = x, y = y), image = imagen) game.addVisual(img) return img})
-	
 }
 }
