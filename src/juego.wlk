@@ -7,6 +7,7 @@ import arco.*
 import marcador.*
 import powerUp.*
 import menu.*
+import sonidos.*
 
 object juego { //juego principal
 	const property w = 30 //ancho
@@ -51,27 +52,7 @@ object juego { //juego principal
 	
 }
 
-object sonidoPartido{
-	var cancha
-	method gol(){
-		game.sound("gol.mp3").play()
-	}
-	method final(){
-		game.sound("silbatoFinal.mp3").play()
-	}
-	method silbato(){
-		game.sound("silbato.mp3").play()
-	}
-	method cancha(){
-		cancha = game.sound("cancha.mp3")
-		cancha.shouldLoop(true)
-		cancha.play()
-	}
-	method detenerCancha(){
-		cancha.shouldLoop(false)
-		cancha.stop()
-	}
-}
+
 
 object partido{
 	const property elementos = #{}
@@ -208,12 +189,13 @@ object pantallaGanador{
 	}
 	
 	method empate(){
-		musica = game.sound("rickroll.mp3")
+		musica = soundProducer.sound("rickroll.mp3")
 		musica.play()
 		game.schedule(50,{game.addVisual(empate) game.addVisual(zzz)})
 	}
+	
 	method ganador(jugador){
-		musica = game.sound("ganador.mp3")
+		musica = soundProducer.sound("ganador.mp3")
 		musica.play()
 		jugador.position().goTo(juego.medioX()-1, juego.medioY()-3)
 		jugador.actualizarImagenes()

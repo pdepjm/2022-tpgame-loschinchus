@@ -6,6 +6,7 @@ import mutablePosition.*
 import arco.*
 import marcador.*
 import juego.*
+import sonidos.*
 
 describe "Tests Jugador"{
 	
@@ -45,6 +46,7 @@ describe "Tests de Pelota"{
 	method initialize()
 	{
 		juego.inicializar()
+		soundProducer.provider(soundProviderMock)
 		
 	}
 	

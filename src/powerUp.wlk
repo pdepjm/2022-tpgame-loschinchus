@@ -2,6 +2,7 @@ import fisicas.particulas.*
 import jugador.*
 import juego.*
 import wollok.game.*
+import sonidos.*
 
 class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	
@@ -44,7 +45,7 @@ class PowerUp inherits Particula(image = "powerUp1.png", rebote = 0.8){
 	}
 	
 	method activar(jugador){
-		game.sound(sonido).play()
+		soundProducer.sound(sonido).play()
 		self.quitar()
 		self.efecto(jugador)
 		game.schedule(duracion,{self.desactivar(jugador)})

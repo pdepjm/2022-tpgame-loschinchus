@@ -4,6 +4,7 @@ import jugador.*
 import fisicas.graficos.*
 import mutablePosition.*
 import marcador.ContadorCiclico
+import sonidos.*
 
 
 class Item inherits Imagen{
@@ -72,7 +73,7 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 			itemActual = elementos.get(contador.next())
 			self.cambiarImagen()
 			self.position(itemActual.posicionParaSelector())
-			game.sound(sonidoScroll).play()
+			soundProducer.sound(sonidoScroll).play()
 		}
 	}
 	
@@ -81,7 +82,7 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 			itemActual = elementos.get(contador.prev())
 			self.cambiarImagen()
 			self.position(itemActual.posicionParaSelector())
-			game.sound(sonidoScroll).play()
+			soundProducer.sound(sonidoScroll).play()
 		
 		}
 	}
@@ -89,14 +90,14 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 	method slideNext(){
 		if(activado){
 			itemActual.next()
-			game.sound(sonidoScroll).play()
+			soundProducer.sound(sonidoScroll).play()
 		}
 	}
 	
 	method slidePrev(){
 		if(activado){
 			itemActual.prev()
-			game.sound(sonidoScroll).play()
+			soundProducer.sound(sonidoScroll).play()
 		}
 	}
 	
@@ -130,10 +131,10 @@ class Selector inherits Item(image = "selector1.png", elementos = []){
 object sonidoMenu{
 	var cancion
 	method listo(){
-		game.sound( "ready.mp3").play()
+		soundProducer.sound( "ready.mp3").play()
 	}
 	method cancionDeFondo(){
-		cancion = game.sound("cumbiaLosTrapos.mp3")
+		cancion = soundProducer.sound("cumbiaLosTrapos.mp3")
 		cancion.shouldLoop(true)
 		cancion.play()
 	}

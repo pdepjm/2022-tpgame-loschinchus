@@ -1,22 +1,15 @@
 import mutablePosition.*
 import juego.*
 import wollok.game.*
+import sonidos.*
 
-object sonidoPelota{
-	method play(){
-		game.sound("pelota.mp3").play()
-	}
-}
-object sinSonido{
-	method play(){}
-}
 
 package particulas{
 	class Particula{
 		var property image = "pelota0.png"
 		var property position = new MutablePosition()
 		var property velocidad= new Velocidad()
-		var property gravedad = juego.g()// valor por defecto de gravedad
+		var property gravedad = juego.g() // valor por defecto de gravedad
 		
 		
 		var property rebote = 0.6 //velocidad que queda despues de rebotar
@@ -25,7 +18,7 @@ package particulas{
 		var property rozamientoNormal = 0.8
 		var property reboteNormal = 0.6
 		
-		const sonidoRebote = sinSonido
+		const sonidoRebote = soundMock
 		
 		method resetear(){
 			position.reestablecer()
