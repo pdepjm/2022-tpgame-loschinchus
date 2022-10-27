@@ -47,8 +47,8 @@ object juego { //juego principal
 object partido{
 	const property elementos = #{}
 	
-	var property posJIzq = new Pair(x = 8, y = 0)
-	var property posJDer = new Pair(x = juego.w()-8, y = 0)
+	var property posJIzq = new Pair(x = juego.w()/3.75, y = 0)
+	var property posJDer = new Pair(x = juego.w()-juego.w().div(3.75)-1, y = 0)
 	var property posPelota = new Pair(x = 15, y = 15)
 	var property powerUps = [superPique, arcoMasGrande, pisoResbaloso, superFuerza, superSalto, gravedadCero]
 	var property alturaArcos = 6
