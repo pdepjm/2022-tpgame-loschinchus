@@ -1,5 +1,7 @@
 import wollok.game.*
-import juego.* 
+import juego.*
+import arco.*
+import menu.* 
 
 program futbolCabezon{
 	juego.iniciar()

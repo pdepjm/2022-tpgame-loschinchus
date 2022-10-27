@@ -27,7 +27,7 @@ class Jugador{
 	var property hayRozamiento = true
 	
 	var property fuerzaX = 2 //fuerza con que patea
-	var property fuerzaY = 3
+	var property fuerzaY = 1.8
 	var property salto = 1.5
 	
 	var property arco = new Arco(altura = partido.alturaArcos(), largo = partido.largoArcos())
