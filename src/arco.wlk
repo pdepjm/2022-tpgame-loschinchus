@@ -13,27 +13,30 @@ class Arco{
 	var yaSeContoElGol = false
 	
 	method dibujarALaIzquierda(){
+		const inicio = juego.w()-1-2
+		inicioX = inicio+1
 		self.dibujar(juego.x0(),juego.x0()+largo)
-		marcador = new Contador(x = juego.w()-1-2, y = juego.h()-1-3, haciaDerecha = true)
+		marcador = new Contador(x =inicio, y = juego.h()-1-3, haciaDerecha = true)
 	}
 	
 	method dibujarALaDerecha(){
+		const inicio = juego.x0()+2
+		inicioX = inicio-1
 		self.dibujar(juego.w()-1-largo, juego.w()-1)
-		marcador = new Contador(x = juego.x0()+2, y = juego.h()-1-3, haciaDerecha = false)
+		marcador = new Contador(x = inicio, y = juego.h()-1-3, haciaDerecha = false)
 	}
 	
 	method dibujar(inicio,fin){
 		inicioX = inicio
 		finX = fin
 		puntos =  lineDrawer.dibujarImagenes(inicioX,altura,finX,altura,"arco.jpg")
-		inicioX += 1
 	}
 	
 	method esGol(pelota){
 		const esGol = pelota.position().x().between(inicioX,finX) && pelota.position().y().between(0,altura-1)
 		if(esGol){
 			if(!yaSeContoElGol){
-				marcador.aumentar()
+				marcador.aumentar() 
 				yaSeContoElGol = true
 			}
 		}
