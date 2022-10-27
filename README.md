@@ -9,7 +9,7 @@
 
 ## Capturas
 
-![capturaMenu](captura1.jepg)
+![capturaMenu](captura1.jpeg)
 ![capturaPartido](captura2.jpeg)
 ![capturaGanador](captura3.jpeg)
 
