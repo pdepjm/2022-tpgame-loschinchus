@@ -73,7 +73,7 @@ object arcoMasGrande inherits PowerUp(image = "arcoMasGrande.png"){
 	}
 }
 
-object pisoResbaloso inherits PowerUp{
+object pisoResbaloso inherits PowerUp(image = "pisoResbaloso.png"){
 	
 	override method efecto(jugador){
 		jugadores.cambiarRozamiento(0.95)
@@ -107,7 +107,7 @@ object superSalto inherits PowerUp(image = "superSalto.png"){
 	}
 }
 
-object gravedadCero inherits PowerUp{
+object gravedadCero inherits PowerUp(image = "gravedadCero.png"){
 	
 	override method efecto(jugador){
 		partido.gravedad(-0.3)
