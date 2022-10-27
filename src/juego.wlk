@@ -97,7 +97,7 @@ object partido{
 			contadorPelotaTrabada = 0
 		if(contadorPelotaTrabada >= 3)
 			self.saqueDelMedio()
-	}
+	} 
 	
 	method moverElementos(){
 		elementos.forEach({

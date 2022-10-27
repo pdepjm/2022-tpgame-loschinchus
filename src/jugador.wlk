@@ -6,10 +6,15 @@ import wollok.game.*
 import mutablePosition.*
 
 class Pie inherits Imagen{
+	var sePuedePatear = true
 	method patear(){
 		const imagen = image
-		image = imagen.replace(".png", "Patear.png")
-		game.schedule(30,{self.cambiarImagen(imagen)})
+		if(sePuedePatear){
+			image = imagen.replace(".png", "Patear.png")
+			sePuedePatear = false
+			game.schedule(30,{self.cambiarImagen(imagen) sePuedePatear = true})
+		}
+		
 	}
 }
 
