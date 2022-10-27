@@ -51,7 +51,7 @@ object partido{
 	var property posJDer = new Pair(x = juego.w()-juego.w().div(3.75)-1, y = 0)
 	var property posPelota = new Pair(x = juego.medioX(), y = juego.medioY())
 	var property powerUps = [superPique, arcoMasGrande, pisoResbaloso, superFuerza, superSalto, gravedadCero]
-	var property alturaArcos = juego.h().div(3)
+	var property alturaArcos = 6
 	var property largoArcos = juego.w().div(10)
 	var property duracionPartido = 1
 	var property noEsGol = true

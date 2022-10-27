@@ -24,16 +24,13 @@ class Jugador{
 	var property imagenCabeza
 	var property imagenPie
 	
-	var property altoArco = 6
-	var property largoArco = 3
-	
 	var property hayRozamiento = true
 	
 	var property fuerzaX = 2 //fuerza con que patea
 	var property fuerzaY = 3
 	var property salto = 1.5
 	
-	var property arco = new Arco(altura = altoArco, largo = largoArco)
+	var property arco = new Arco(altura = partido.alturaArcos(), largo = partido.largoArcos())
 	
 	var property velX = 1 //Velocidad de empuje
 	
