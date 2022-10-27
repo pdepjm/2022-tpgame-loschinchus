@@ -233,7 +233,7 @@ object jugadores{
 	var property fuerzaYNormal = 3
 	var property saltoNormal = 1.5
 	
-	method esGol(posicion) = jugadorIzq.arco().esGol(posicion) || jugadorDer.arco().esGol(posicion)
+	method esGol(laPelota) = jugadorIzq.arco().esGol(laPelota) || jugadorDer.arco().esGol(laPelota)
 	
 	method quienGana() = if (jugadorIzq.goles() > jugadorDer.goles()) jugadorDer else if(jugadorDer.goles() > jugadorIzq.goles()) jugadorIzq
 	
