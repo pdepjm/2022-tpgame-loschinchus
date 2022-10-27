@@ -51,14 +51,11 @@ describe "Tests de Pelota"{
 		assert.that(pelota.velocidad().vy() > velocidadInicialY)
 	}
 	
-//	test "si la pelota entra en el arco, es gol"{
-//		const arco = jugadorIzq.arco()
-//		posicion.goTo(arco.inicioX(), 0)
-//		
-//
-//		assert.that(arco.esGol(pelota.position()))
-//		
-//	}
-//
+	test "Si la pelota esta por debajo de la altura del arco y hacia adentro del arco, es gol"{
+		jugadores.inicializar()
+		pelota.position().goTo(0,0)
+		assert.that(jugadores.esGol(pelota))
+	}
+
 
 	}
