@@ -20,7 +20,7 @@
 ¡Cuidado! Prestá atención si aparece un power up, podés activarlo pasando por su posición.
 	
 ### Controles
-![controles](controles.png)
+![controles](assets/controles.png)
 
 UTN FRBA - Paradigmas de programación - K2104
 - Una vez terminado, no tenemos problemas en que el repositorio sea público.
