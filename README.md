@@ -9,7 +9,7 @@
 
 ## Capturas
 
-![capturaMenu](captura1.jpeg)
+![capturaMenu](captura1.png)
 ![capturaPartido](captura2.jpeg)
 ![capturaGanador](captura3.jpeg)
 
@@ -19,7 +19,8 @@
 3. Al comenzar el partido, tenés 1 minuto para meter la mayor cantidad de goles.
 ¡Cuidado! Prestá atención si aparece un power up, podés activarlo pasando por su posición.
 	
-
+### Controles
+![controles](controles.png)
 
 ## Otros
 
