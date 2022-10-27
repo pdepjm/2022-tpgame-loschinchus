@@ -9,7 +9,7 @@
 
 ## Capturas
 
-![capturaMenu](captura1.png)
+![capturaMenu](captura1.jpeg)
 ![capturaPartido](captura2.jpeg)
 ![capturaGanador](captura3.jpeg)
 
@@ -22,8 +22,6 @@
 ### Controles
 ![controles](controles.png)
 
-## Otros
-
-- Curso/Facultad
-- Versión de wollok
-- Una vez terminado, no tenemos problemas en que el repositorio sea público / queremos manternerlo privado
+UTN FRBA - Paradigmas de programación - K2104
+- Una vez terminado, no tenemos problemas en que el repositorio sea público.
+ 
