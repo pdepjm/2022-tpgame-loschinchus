@@ -136,8 +136,7 @@ object partido{
 	}
 	
 	method chequearGol(){
-		const posicionPelota = pelota.position()
-		if(jugadores.esGol(posicionPelota)){
+		if(jugadores.esGol(pelota)){
 			noEsGol = false
 			sonidoPartido.gol()
 			game.schedule(2000, {self.saqueDelMedio()})

@@ -29,8 +29,8 @@ class Arco{
 		inicioX += 1
 	}
 	
-	method esGol(posicion){
-		const esGol = posicion.x().between(inicioX,finX) && posicion.y().between(0,altura-1)
+	method esGol(pelota){
+		const esGol = pelota.position().x().between(inicioX,finX) && pelota.position().y().between(0,altura-1)
 		if(esGol){
 			if(!yaSeContoElGol){
 				marcador.aumentar()
