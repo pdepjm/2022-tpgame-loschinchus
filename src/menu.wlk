@@ -136,18 +136,23 @@ object sonidoMenu{
 
 object logo inherits Imagen(image = "logo.png", position = new MutablePosition(x = juego.medioX()-8, y = juego.medioY() + 2)){
 }
+object controles inherits Imagen(image = "controles.png", position = new MutablePosition(x = juego.medioX()-6, y = juego.y0())){
+	
+}
 
 object menu{
-	var property posicionIzq = new MutablePosition(x = juego.medioX()-5, y =  juego.medioY()-4)
-	var property posicionDer = new MutablePosition(x = juego.medioX()+4, y =  juego.medioY()-4)
+	var property posicionIzq = new MutablePosition(x = juego.medioX()-5, y =  juego.medioY()-2)
+	var property posicionDer = new MutablePosition(x = juego.medioX()+4, y =  juego.medioY()-2)
 	
 	var property cabezaIzq = new Item(position = posicionIzq, image = "messiIzq.png", elementos = ["messiIzq.png","mbappeIzq.png","bichoIzq.png","cristinaIzq.png","mileiIzq.png","jesusIzq.png"])
 	var property cabezaDer = new Item(position = posicionDer, image = "messiDer.png", elementos = ["messiDer.png","mbappeDer.png","bichoDer.png","cristinaDer.png","mileiDer.png","jesusDer.png"])
 	var property pieIzq = new Item(position = posicionIzq, image = "botinIzq1.png", elementos = ["botinIzq1.png","botinIzq2.png","botinIzq3.png","botinIzq4.png","botinIzq5.png", "pieIzq.png", "pantuflaIzq.png"])
 	var property pieDer = new Item(position = posicionDer, image = "botinDer1.png", elementos = ["botinDer1.png","botinDer2.png","botinDer3.png","botinDer4.png","botinDer5.png", "pieDer.png", "pantuflaDer.png"])
 	
-	const listoIzq = new Listo(position = posicionIzq.down(4).left(2))
-	const listoDer = new Listo(position = posicionDer.down(4).left(2))
+	
+	
+	const listoIzq = new Listo(position = posicionIzq.down(2).left(2))
+	const listoDer = new Listo(position = posicionDer.down(2).left(2))
 	var selectorIzq = new Selector(position = posicionIzq)
 	var selectorDer = new Selector(position = posicionDer)
 	
@@ -183,6 +188,7 @@ object menu{
 		game.addVisual(selectorIzq)
 		game.addVisual(selectorDer)
 		game.addVisual(logo)
+		game.addVisual(controles)
 		sonidoMenu.cancionDeFondo()
 	}
 	
