@@ -161,13 +161,13 @@ object pantallaGanador{
 	const fondoNegro = new Imagen (image = "fondoNegro.png")
 	const empateI = new Imagen(image = "empate.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY() ))
 	const zzz = new Imagen(image = "zzz.png", position = new MutablePosition(x = juego.medioX()-8,y = juego.medioY()-4 ))
-	const presionaParaContinuar = new Imagen(image = "presioneEnter.png", position = new MutablePosition(x = juego.medioX()-12, y = juego.y0() ))
+	const presionaParaContinuar = new Imagen(image = "presioneF.png", position = new MutablePosition(x = juego.medioX()-12, y = juego.y0() ))
 	var musica
 	
 	method ganador() = jugadores.quienGana()
 	
 	method iniciar(){
-		keyboard.enter().onPressDo({musica.stop() menu.iniciar()})
+		keyboard.f().onPressDo({musica.stop() menu.iniciar()})
 		game.addVisual(fondoNegro)
 		game.schedule(50,{game.addVisual(presionaParaContinuar)})
 		if (self.ganador() == null)
