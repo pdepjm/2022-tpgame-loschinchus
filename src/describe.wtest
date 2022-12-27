@@ -1,0 +1,61 @@
+import wollok.game.*
+import fisicas.particulas.*
+import fisicas.graficos.*
+import jugador.*
+import mutablePosition.*
+import arco.*
+import marcador.*
+import juego.*
+import sonidos.*
+
+describe "Tests Jugador"{
+	
+	method initialize(){
+		juego.inicializar()
+	}
+	
+	test "Si un jugador se mueve a la derecha, su posicion en X aumenta en 1"{
+		const posicionInicial = jugadorIzq.position().x()
+		jugadorIzq.derecha()
+		jugadores.moverse()
+		assert.equals(posicionInicial + 1, jugadorIzq.position().x())
+		game.clear()
+	}
+	 
+	test "Si un jugador se mueve a la izquierda, su posicion en X disminuye en 1"{
+		const posicionInicial = jugadorIzq.position().x()
+		jugadorIzq.izquierda()
+		jugadores.moverse()		
+		assert.equals(jugadorIzq.position().x(), posicionInicial - 1)		
+	}
+	
+	test "Si un jugador salta, su velocidad en Y aumenta"{
+		const velocidadInicial = jugadorIzq.velocidad().vy()		
+		jugadorIzq.saltar()
+		assert.that(jugadorIzq.velocidad().vy() > velocidadInicial)			
+	}
+}
+
+describe "Tests de Pelota"{
+	//const posicion = new MutablePosition()
+	method initialize(){
+		juego.inicializar()
+		soundProducer.provider(soundProviderMock)
+	}
+	
+	test "Si la pelota es pateada, su velocidad aumenta en ambas direcciones"{
+		const velocidadInicialX = pelota.velocidad().vx()		
+		const velocidadInicialY = pelota.velocidad().vy()		
+		pelota.patear(2, 5, 1)
+		assert.that(pelota.velocidad().vx() > velocidadInicialX)
+		assert.that(pelota.velocidad().vy() > velocidadInicialY)
+	}
+	
+	test "Si la pelota esta por debajo de la altura del arco y hacia adentro del arco, es gol"{
+		jugadores.inicializar()
+		pelota.position().goTo(0,0)
+		assert.that(jugadores.esGol(pelota))
+	}
+
+
+	}
