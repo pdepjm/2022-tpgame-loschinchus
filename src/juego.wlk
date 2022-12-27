@@ -21,8 +21,9 @@ object juego { //juego principal
 	
 	method iniciar(){
 		self.inicializar()
-		game.start()
 		menu.iniciar()
+		game.start()
+		
 	}
 	
 	method inicializar() {
@@ -33,6 +34,7 @@ object juego { //juego principal
 		game.title("Juego")
 		game.boardGround("background.png")
 		menu.inicializar()
+		
 		
 	}
 	

@@ -189,7 +189,8 @@ object menu{
 		game.addVisual(selectorDer)
 		game.addVisual(logo)
 		game.addVisual(controles)
-		sonidoMenu.cancionDeFondo()
+		
+		
 	}
 	
 	method chequearListos(){
@@ -205,8 +206,11 @@ object menu{
 			jugadorDer.cambiarCabeza(cabezaDer.image())
 			jugadorDer.cambiarPie(pieDer.image())
 			
-			sonidoMenu.listo()
-			game.schedule(1500, {sonidoMenu.pararCancion() partido.iniciar()})
+//			sonidoMenu.listo()
+			game.schedule(1500, {
+//				sonidoMenu.pararCancion() 
+				partido.iniciar()
+			})
 		}
 	}
 }
